@@ -59,12 +59,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Alazab Azure AI Operations Console" },
+      { title: "Alazab AI Operations Console" },
       {
         name: "description",
         content:
           "غرفة تحكم تشغيلية لإدارة ومراقبة منصة الذكاء الاصطناعي المؤسسية المبنية على Azure AI.",
       },
+      { property: "og:title", content: "Alazab AI Operations Console" },
+      { name: "twitter:title", content: "Alazab AI Operations Console" },
+      { name: "description", content: "The project is an operational control room for managing AI within the organization." },
+      { property: "og:description", content: "The project is an operational control room for managing AI within the organization." },
+      { name: "twitter:description", content: "The project is an operational control room for managing AI within the organization." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8a2f03be-0498-484d-ac41-6f8eb7fe4939" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/8a2f03be-0498-484d-ac41-6f8eb7fe4939" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
