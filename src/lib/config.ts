@@ -1,19 +1,26 @@
 /**
  * Runtime config for the operations console.
- * Non-sensitive only. Backend secrets live in Azure Key Vault.
- *
- * The base URL can be overridden at runtime from Settings → Backend URL,
- * which persists in localStorage so operators can re-target without a rebuild.
+ * - Default base URL is "" (same-origin) so all /api/* requests hit the
+ *   built-in TanStack Start server routes that proxy/fallback to Azure.
+ * - Operators can still override the base URL from Settings.
  */
 
 const STORAGE_KEY = "alazab.api_base_url";
-const FALLBACK =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  "https://azab-rag-func.azurewebsites.net";
+// Old default we want to migrate away from (would cause CORS).
+const LEGACY_DEFAULT = "https://azab-rag-func.azurewebsites.net";
+
+const FALLBACK = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "";
 
 export function getApiBaseUrl(): string {
   if (typeof window === "undefined") return FALLBACK;
-  return window.localStorage.getItem(STORAGE_KEY) || FALLBACK;
+  const stored = window.localStorage.getItem(STORAGE_KEY);
+  if (stored && stored !== LEGACY_DEFAULT) return stored;
+  // Migrate: silently drop the legacy direct Azure URL — same-origin proxy
+  // handles routing to Azure now.
+  if (stored === LEGACY_DEFAULT) {
+    window.localStorage.removeItem(STORAGE_KEY);
+  }
+  return FALLBACK;
 }
 
 export function setApiBaseUrl(url: string) {
