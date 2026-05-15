@@ -34,7 +34,14 @@ export const Route = createFileRoute("/_app")({
   component: AppLayout,
 });
 
-const NAV = [
+interface NavItem {
+  to: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  exact?: boolean;
+}
+
+const NAV: NavItem[] = [
   { to: "/", label: "لوحة التحكم", icon: LayoutDashboard, exact: true },
   { to: "/integrations", label: "الربط والمعرفات", icon: PlugZap },
   { to: "/data", label: "فحص وتنظيم البيانات", icon: FolderSearch },
