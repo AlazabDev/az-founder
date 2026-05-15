@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as ApiToolsRouteImport } from './routes/api/tools'
+import { Route as ApiPromptsRouteImport } from './routes/api/prompts'
+import { Route as ApiJobsRouteImport } from './routes/api/jobs'
 import { Route as AppToolsRouteImport } from './routes/_app/tools'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
@@ -21,6 +24,36 @@ import { Route as AppIntegrationsRouteImport } from './routes/_app/integrations'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
+import { Route as ApiPromptsIdRouteImport } from './routes/api/prompts/$id'
+import { Route as ApiKnowledgeUploadRouteImport } from './routes/api/knowledge/upload'
+import { Route as ApiKnowledgeSourcesRouteImport } from './routes/api/knowledge/sources'
+import { Route as ApiKnowledgeReindexRouteImport } from './routes/api/knowledge/reindex'
+import { Route as ApiJobsIdRouteImport } from './routes/api/jobs/$id'
+import { Route as ApiIntegrationsHealthRouteImport } from './routes/api/integrations/health'
+import { Route as ApiDataUploadRouteImport } from './routes/api/data/upload'
+import { Route as ApiDataJobsRouteImport } from './routes/api/data/jobs'
+import { Route as ApiDataAnalyzeRouteImport } from './routes/api/data/analyze'
+import { Route as ApiDashboardOverviewRouteImport } from './routes/api/dashboard/overview'
+import { Route as ApiAuthRefreshRouteImport } from './routes/api/auth/refresh'
+import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
+import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
+import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
+import { Route as ApiAnalyticsOverviewRouteImport } from './routes/api/analytics/overview'
+import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
+import { Route as ApiToolsIdTestRouteImport } from './routes/api/tools/$id/test'
+import { Route as ApiPromptsIdTestRouteImport } from './routes/api/prompts/$id/test'
+import { Route as ApiKnowledgeSourcesIdRouteImport } from './routes/api/knowledge/sources/$id'
+import { Route as ApiJobsIdRetryRouteImport } from './routes/api/jobs/$id/retry'
+import { Route as ApiJobsIdCancelRouteImport } from './routes/api/jobs/$id/cancel'
+import { Route as ApiIntegrationsConfigStatusRouteImport } from './routes/api/integrations/config/status'
+import { Route as ApiIntegrationsConfigSaveRouteImport } from './routes/api/integrations/config/save'
+import { Route as ApiIntegrationsIdTestRouteImport } from './routes/api/integrations/$id/test'
+import { Route as ApiIntegrationsIdSecretRouteImport } from './routes/api/integrations/$id/secret'
+import { Route as ApiDataJobsIdRouteImport } from './routes/api/data/jobs/$id'
+import { Route as ApiDataJobsIdSendToKnowledgeBaseRouteImport } from './routes/api/data/jobs/$id/send-to-knowledge-base'
+import { Route as ApiDataJobsIdRetryRouteImport } from './routes/api/data/jobs/$id/retry'
+import { Route as ApiDataJobsIdExportRouteImport } from './routes/api/data/jobs/$id/export'
+import { Route as ApiDataJobsIdApproveRouteImport } from './routes/api/data/jobs/$id/approve'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -35,6 +68,21 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiToolsRoute = ApiToolsRouteImport.update({
+  id: '/api/tools',
+  path: '/api/tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPromptsRoute = ApiPromptsRouteImport.update({
+  id: '/api/prompts',
+  path: '/api/prompts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiJobsRoute = ApiJobsRouteImport.update({
+  id: '/api/jobs',
+  path: '/api/jobs',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppToolsRoute = AppToolsRouteImport.update({
   id: '/tools',
@@ -81,6 +129,159 @@ const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPromptsIdRoute = ApiPromptsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiPromptsRoute,
+} as any)
+const ApiKnowledgeUploadRoute = ApiKnowledgeUploadRouteImport.update({
+  id: '/api/knowledge/upload',
+  path: '/api/knowledge/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKnowledgeSourcesRoute = ApiKnowledgeSourcesRouteImport.update({
+  id: '/api/knowledge/sources',
+  path: '/api/knowledge/sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiKnowledgeReindexRoute = ApiKnowledgeReindexRouteImport.update({
+  id: '/api/knowledge/reindex',
+  path: '/api/knowledge/reindex',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiJobsIdRoute = ApiJobsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiJobsRoute,
+} as any)
+const ApiIntegrationsHealthRoute = ApiIntegrationsHealthRouteImport.update({
+  id: '/api/integrations/health',
+  path: '/api/integrations/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDataUploadRoute = ApiDataUploadRouteImport.update({
+  id: '/api/data/upload',
+  path: '/api/data/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDataJobsRoute = ApiDataJobsRouteImport.update({
+  id: '/api/data/jobs',
+  path: '/api/data/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDataAnalyzeRoute = ApiDataAnalyzeRouteImport.update({
+  id: '/api/data/analyze',
+  path: '/api/data/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDashboardOverviewRoute = ApiDashboardOverviewRouteImport.update({
+  id: '/api/dashboard/overview',
+  path: '/api/dashboard/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRefreshRoute = ApiAuthRefreshRouteImport.update({
+  id: '/api/auth/refresh',
+  path: '/api/auth/refresh',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthMeRoute = ApiAuthMeRouteImport.update({
+  id: '/api/auth/me',
+  path: '/api/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
+  id: '/api/auth/logout',
+  path: '/api/auth/logout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
+  id: '/api/auth/login',
+  path: '/api/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAnalyticsOverviewRoute = ApiAnalyticsOverviewRouteImport.update({
+  id: '/api/analytics/overview',
+  path: '/api/analytics/overview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiChatRoute = ApiAiChatRouteImport.update({
+  id: '/api/ai/chat',
+  path: '/api/ai/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiToolsIdTestRoute = ApiToolsIdTestRouteImport.update({
+  id: '/$id/test',
+  path: '/$id/test',
+  getParentRoute: () => ApiToolsRoute,
+} as any)
+const ApiPromptsIdTestRoute = ApiPromptsIdTestRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => ApiPromptsIdRoute,
+} as any)
+const ApiKnowledgeSourcesIdRoute = ApiKnowledgeSourcesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiKnowledgeSourcesRoute,
+} as any)
+const ApiJobsIdRetryRoute = ApiJobsIdRetryRouteImport.update({
+  id: '/retry',
+  path: '/retry',
+  getParentRoute: () => ApiJobsIdRoute,
+} as any)
+const ApiJobsIdCancelRoute = ApiJobsIdCancelRouteImport.update({
+  id: '/cancel',
+  path: '/cancel',
+  getParentRoute: () => ApiJobsIdRoute,
+} as any)
+const ApiIntegrationsConfigStatusRoute =
+  ApiIntegrationsConfigStatusRouteImport.update({
+    id: '/api/integrations/config/status',
+    path: '/api/integrations/config/status',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiIntegrationsConfigSaveRoute =
+  ApiIntegrationsConfigSaveRouteImport.update({
+    id: '/api/integrations/config/save',
+    path: '/api/integrations/config/save',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiIntegrationsIdTestRoute = ApiIntegrationsIdTestRouteImport.update({
+  id: '/api/integrations/$id/test',
+  path: '/api/integrations/$id/test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiIntegrationsIdSecretRoute = ApiIntegrationsIdSecretRouteImport.update({
+  id: '/api/integrations/$id/secret',
+  path: '/api/integrations/$id/secret',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiDataJobsIdRoute = ApiDataJobsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ApiDataJobsRoute,
+} as any)
+const ApiDataJobsIdSendToKnowledgeBaseRoute =
+  ApiDataJobsIdSendToKnowledgeBaseRouteImport.update({
+    id: '/send-to-knowledge-base',
+    path: '/send-to-knowledge-base',
+    getParentRoute: () => ApiDataJobsIdRoute,
+  } as any)
+const ApiDataJobsIdRetryRoute = ApiDataJobsIdRetryRouteImport.update({
+  id: '/retry',
+  path: '/retry',
+  getParentRoute: () => ApiDataJobsIdRoute,
+} as any)
+const ApiDataJobsIdExportRoute = ApiDataJobsIdExportRouteImport.update({
+  id: '/export',
+  path: '/export',
+  getParentRoute: () => ApiDataJobsIdRoute,
+} as any)
+const ApiDataJobsIdApproveRoute = ApiDataJobsIdApproveRouteImport.update({
+  id: '/approve',
+  path: '/approve',
+  getParentRoute: () => ApiDataJobsIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -94,6 +295,39 @@ export interface FileRoutesByFullPath {
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
   '/tools': typeof AppToolsRoute
+  '/api/jobs': typeof ApiJobsRouteWithChildren
+  '/api/prompts': typeof ApiPromptsRouteWithChildren
+  '/api/tools': typeof ApiToolsRouteWithChildren
+  '/api/ai/chat': typeof ApiAiChatRoute
+  '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/auth/refresh': typeof ApiAuthRefreshRoute
+  '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
+  '/api/data/analyze': typeof ApiDataAnalyzeRoute
+  '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
+  '/api/data/upload': typeof ApiDataUploadRoute
+  '/api/integrations/health': typeof ApiIntegrationsHealthRoute
+  '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
+  '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
+  '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
+  '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
+  '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
+  '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
+  '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
+  '/api/integrations/config/save': typeof ApiIntegrationsConfigSaveRoute
+  '/api/integrations/config/status': typeof ApiIntegrationsConfigStatusRoute
+  '/api/jobs/$id/cancel': typeof ApiJobsIdCancelRoute
+  '/api/jobs/$id/retry': typeof ApiJobsIdRetryRoute
+  '/api/knowledge/sources/$id': typeof ApiKnowledgeSourcesIdRoute
+  '/api/prompts/$id/test': typeof ApiPromptsIdTestRoute
+  '/api/tools/$id/test': typeof ApiToolsIdTestRoute
+  '/api/data/jobs/$id/approve': typeof ApiDataJobsIdApproveRoute
+  '/api/data/jobs/$id/export': typeof ApiDataJobsIdExportRoute
+  '/api/data/jobs/$id/retry': typeof ApiDataJobsIdRetryRoute
+  '/api/data/jobs/$id/send-to-knowledge-base': typeof ApiDataJobsIdSendToKnowledgeBaseRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -106,7 +340,40 @@ export interface FileRoutesByTo {
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
   '/tools': typeof AppToolsRoute
+  '/api/jobs': typeof ApiJobsRouteWithChildren
+  '/api/prompts': typeof ApiPromptsRouteWithChildren
+  '/api/tools': typeof ApiToolsRouteWithChildren
   '/': typeof AppIndexRoute
+  '/api/ai/chat': typeof ApiAiChatRoute
+  '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/auth/refresh': typeof ApiAuthRefreshRoute
+  '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
+  '/api/data/analyze': typeof ApiDataAnalyzeRoute
+  '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
+  '/api/data/upload': typeof ApiDataUploadRoute
+  '/api/integrations/health': typeof ApiIntegrationsHealthRoute
+  '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
+  '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
+  '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
+  '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
+  '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
+  '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
+  '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
+  '/api/integrations/config/save': typeof ApiIntegrationsConfigSaveRoute
+  '/api/integrations/config/status': typeof ApiIntegrationsConfigStatusRoute
+  '/api/jobs/$id/cancel': typeof ApiJobsIdCancelRoute
+  '/api/jobs/$id/retry': typeof ApiJobsIdRetryRoute
+  '/api/knowledge/sources/$id': typeof ApiKnowledgeSourcesIdRoute
+  '/api/prompts/$id/test': typeof ApiPromptsIdTestRoute
+  '/api/tools/$id/test': typeof ApiToolsIdTestRoute
+  '/api/data/jobs/$id/approve': typeof ApiDataJobsIdApproveRoute
+  '/api/data/jobs/$id/export': typeof ApiDataJobsIdExportRoute
+  '/api/data/jobs/$id/retry': typeof ApiDataJobsIdRetryRoute
+  '/api/data/jobs/$id/send-to-knowledge-base': typeof ApiDataJobsIdSendToKnowledgeBaseRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -121,7 +388,40 @@ export interface FileRoutesById {
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/tools': typeof AppToolsRoute
+  '/api/jobs': typeof ApiJobsRouteWithChildren
+  '/api/prompts': typeof ApiPromptsRouteWithChildren
+  '/api/tools': typeof ApiToolsRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/api/ai/chat': typeof ApiAiChatRoute
+  '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
+  '/api/auth/login': typeof ApiAuthLoginRoute
+  '/api/auth/logout': typeof ApiAuthLogoutRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/auth/refresh': typeof ApiAuthRefreshRoute
+  '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
+  '/api/data/analyze': typeof ApiDataAnalyzeRoute
+  '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
+  '/api/data/upload': typeof ApiDataUploadRoute
+  '/api/integrations/health': typeof ApiIntegrationsHealthRoute
+  '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
+  '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
+  '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
+  '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
+  '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
+  '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
+  '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
+  '/api/integrations/config/save': typeof ApiIntegrationsConfigSaveRoute
+  '/api/integrations/config/status': typeof ApiIntegrationsConfigStatusRoute
+  '/api/jobs/$id/cancel': typeof ApiJobsIdCancelRoute
+  '/api/jobs/$id/retry': typeof ApiJobsIdRetryRoute
+  '/api/knowledge/sources/$id': typeof ApiKnowledgeSourcesIdRoute
+  '/api/prompts/$id/test': typeof ApiPromptsIdTestRoute
+  '/api/tools/$id/test': typeof ApiToolsIdTestRoute
+  '/api/data/jobs/$id/approve': typeof ApiDataJobsIdApproveRoute
+  '/api/data/jobs/$id/export': typeof ApiDataJobsIdExportRoute
+  '/api/data/jobs/$id/retry': typeof ApiDataJobsIdRetryRoute
+  '/api/data/jobs/$id/send-to-knowledge-base': typeof ApiDataJobsIdSendToKnowledgeBaseRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -137,6 +437,39 @@ export interface FileRouteTypes {
     | '/prompts'
     | '/settings'
     | '/tools'
+    | '/api/jobs'
+    | '/api/prompts'
+    | '/api/tools'
+    | '/api/ai/chat'
+    | '/api/analytics/overview'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/me'
+    | '/api/auth/refresh'
+    | '/api/dashboard/overview'
+    | '/api/data/analyze'
+    | '/api/data/jobs'
+    | '/api/data/upload'
+    | '/api/integrations/health'
+    | '/api/jobs/$id'
+    | '/api/knowledge/reindex'
+    | '/api/knowledge/sources'
+    | '/api/knowledge/upload'
+    | '/api/prompts/$id'
+    | '/api/data/jobs/$id'
+    | '/api/integrations/$id/secret'
+    | '/api/integrations/$id/test'
+    | '/api/integrations/config/save'
+    | '/api/integrations/config/status'
+    | '/api/jobs/$id/cancel'
+    | '/api/jobs/$id/retry'
+    | '/api/knowledge/sources/$id'
+    | '/api/prompts/$id/test'
+    | '/api/tools/$id/test'
+    | '/api/data/jobs/$id/approve'
+    | '/api/data/jobs/$id/export'
+    | '/api/data/jobs/$id/retry'
+    | '/api/data/jobs/$id/send-to-knowledge-base'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -149,7 +482,40 @@ export interface FileRouteTypes {
     | '/prompts'
     | '/settings'
     | '/tools'
+    | '/api/jobs'
+    | '/api/prompts'
+    | '/api/tools'
     | '/'
+    | '/api/ai/chat'
+    | '/api/analytics/overview'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/me'
+    | '/api/auth/refresh'
+    | '/api/dashboard/overview'
+    | '/api/data/analyze'
+    | '/api/data/jobs'
+    | '/api/data/upload'
+    | '/api/integrations/health'
+    | '/api/jobs/$id'
+    | '/api/knowledge/reindex'
+    | '/api/knowledge/sources'
+    | '/api/knowledge/upload'
+    | '/api/prompts/$id'
+    | '/api/data/jobs/$id'
+    | '/api/integrations/$id/secret'
+    | '/api/integrations/$id/test'
+    | '/api/integrations/config/save'
+    | '/api/integrations/config/status'
+    | '/api/jobs/$id/cancel'
+    | '/api/jobs/$id/retry'
+    | '/api/knowledge/sources/$id'
+    | '/api/prompts/$id/test'
+    | '/api/tools/$id/test'
+    | '/api/data/jobs/$id/approve'
+    | '/api/data/jobs/$id/export'
+    | '/api/data/jobs/$id/retry'
+    | '/api/data/jobs/$id/send-to-knowledge-base'
   id:
     | '__root__'
     | '/_app'
@@ -163,12 +529,66 @@ export interface FileRouteTypes {
     | '/_app/prompts'
     | '/_app/settings'
     | '/_app/tools'
+    | '/api/jobs'
+    | '/api/prompts'
+    | '/api/tools'
     | '/_app/'
+    | '/api/ai/chat'
+    | '/api/analytics/overview'
+    | '/api/auth/login'
+    | '/api/auth/logout'
+    | '/api/auth/me'
+    | '/api/auth/refresh'
+    | '/api/dashboard/overview'
+    | '/api/data/analyze'
+    | '/api/data/jobs'
+    | '/api/data/upload'
+    | '/api/integrations/health'
+    | '/api/jobs/$id'
+    | '/api/knowledge/reindex'
+    | '/api/knowledge/sources'
+    | '/api/knowledge/upload'
+    | '/api/prompts/$id'
+    | '/api/data/jobs/$id'
+    | '/api/integrations/$id/secret'
+    | '/api/integrations/$id/test'
+    | '/api/integrations/config/save'
+    | '/api/integrations/config/status'
+    | '/api/jobs/$id/cancel'
+    | '/api/jobs/$id/retry'
+    | '/api/knowledge/sources/$id'
+    | '/api/prompts/$id/test'
+    | '/api/tools/$id/test'
+    | '/api/data/jobs/$id/approve'
+    | '/api/data/jobs/$id/export'
+    | '/api/data/jobs/$id/retry'
+    | '/api/data/jobs/$id/send-to-knowledge-base'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  ApiJobsRoute: typeof ApiJobsRouteWithChildren
+  ApiPromptsRoute: typeof ApiPromptsRouteWithChildren
+  ApiToolsRoute: typeof ApiToolsRouteWithChildren
+  ApiAiChatRoute: typeof ApiAiChatRoute
+  ApiAnalyticsOverviewRoute: typeof ApiAnalyticsOverviewRoute
+  ApiAuthLoginRoute: typeof ApiAuthLoginRoute
+  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
+  ApiAuthMeRoute: typeof ApiAuthMeRoute
+  ApiAuthRefreshRoute: typeof ApiAuthRefreshRoute
+  ApiDashboardOverviewRoute: typeof ApiDashboardOverviewRoute
+  ApiDataAnalyzeRoute: typeof ApiDataAnalyzeRoute
+  ApiDataJobsRoute: typeof ApiDataJobsRouteWithChildren
+  ApiDataUploadRoute: typeof ApiDataUploadRoute
+  ApiIntegrationsHealthRoute: typeof ApiIntegrationsHealthRoute
+  ApiKnowledgeReindexRoute: typeof ApiKnowledgeReindexRoute
+  ApiKnowledgeSourcesRoute: typeof ApiKnowledgeSourcesRouteWithChildren
+  ApiKnowledgeUploadRoute: typeof ApiKnowledgeUploadRoute
+  ApiIntegrationsIdSecretRoute: typeof ApiIntegrationsIdSecretRoute
+  ApiIntegrationsIdTestRoute: typeof ApiIntegrationsIdTestRoute
+  ApiIntegrationsConfigSaveRoute: typeof ApiIntegrationsConfigSaveRoute
+  ApiIntegrationsConfigStatusRoute: typeof ApiIntegrationsConfigStatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -193,6 +613,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/tools': {
+      id: '/api/tools'
+      path: '/api/tools'
+      fullPath: '/api/tools'
+      preLoaderRoute: typeof ApiToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/prompts': {
+      id: '/api/prompts'
+      path: '/api/prompts'
+      fullPath: '/api/prompts'
+      preLoaderRoute: typeof ApiPromptsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/jobs': {
+      id: '/api/jobs'
+      path: '/api/jobs'
+      fullPath: '/api/jobs'
+      preLoaderRoute: typeof ApiJobsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/tools': {
       id: '/_app/tools'
@@ -257,6 +698,216 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnalyticsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/prompts/$id': {
+      id: '/api/prompts/$id'
+      path: '/$id'
+      fullPath: '/api/prompts/$id'
+      preLoaderRoute: typeof ApiPromptsIdRouteImport
+      parentRoute: typeof ApiPromptsRoute
+    }
+    '/api/knowledge/upload': {
+      id: '/api/knowledge/upload'
+      path: '/api/knowledge/upload'
+      fullPath: '/api/knowledge/upload'
+      preLoaderRoute: typeof ApiKnowledgeUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/knowledge/sources': {
+      id: '/api/knowledge/sources'
+      path: '/api/knowledge/sources'
+      fullPath: '/api/knowledge/sources'
+      preLoaderRoute: typeof ApiKnowledgeSourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/knowledge/reindex': {
+      id: '/api/knowledge/reindex'
+      path: '/api/knowledge/reindex'
+      fullPath: '/api/knowledge/reindex'
+      preLoaderRoute: typeof ApiKnowledgeReindexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/jobs/$id': {
+      id: '/api/jobs/$id'
+      path: '/$id'
+      fullPath: '/api/jobs/$id'
+      preLoaderRoute: typeof ApiJobsIdRouteImport
+      parentRoute: typeof ApiJobsRoute
+    }
+    '/api/integrations/health': {
+      id: '/api/integrations/health'
+      path: '/api/integrations/health'
+      fullPath: '/api/integrations/health'
+      preLoaderRoute: typeof ApiIntegrationsHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/data/upload': {
+      id: '/api/data/upload'
+      path: '/api/data/upload'
+      fullPath: '/api/data/upload'
+      preLoaderRoute: typeof ApiDataUploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/data/jobs': {
+      id: '/api/data/jobs'
+      path: '/api/data/jobs'
+      fullPath: '/api/data/jobs'
+      preLoaderRoute: typeof ApiDataJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/data/analyze': {
+      id: '/api/data/analyze'
+      path: '/api/data/analyze'
+      fullPath: '/api/data/analyze'
+      preLoaderRoute: typeof ApiDataAnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/dashboard/overview': {
+      id: '/api/dashboard/overview'
+      path: '/api/dashboard/overview'
+      fullPath: '/api/dashboard/overview'
+      preLoaderRoute: typeof ApiDashboardOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/refresh': {
+      id: '/api/auth/refresh'
+      path: '/api/auth/refresh'
+      fullPath: '/api/auth/refresh'
+      preLoaderRoute: typeof ApiAuthRefreshRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/me': {
+      id: '/api/auth/me'
+      path: '/api/auth/me'
+      fullPath: '/api/auth/me'
+      preLoaderRoute: typeof ApiAuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/logout': {
+      id: '/api/auth/logout'
+      path: '/api/auth/logout'
+      fullPath: '/api/auth/logout'
+      preLoaderRoute: typeof ApiAuthLogoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/login': {
+      id: '/api/auth/login'
+      path: '/api/auth/login'
+      fullPath: '/api/auth/login'
+      preLoaderRoute: typeof ApiAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/analytics/overview': {
+      id: '/api/analytics/overview'
+      path: '/api/analytics/overview'
+      fullPath: '/api/analytics/overview'
+      preLoaderRoute: typeof ApiAnalyticsOverviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai/chat': {
+      id: '/api/ai/chat'
+      path: '/api/ai/chat'
+      fullPath: '/api/ai/chat'
+      preLoaderRoute: typeof ApiAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/tools/$id/test': {
+      id: '/api/tools/$id/test'
+      path: '/$id/test'
+      fullPath: '/api/tools/$id/test'
+      preLoaderRoute: typeof ApiToolsIdTestRouteImport
+      parentRoute: typeof ApiToolsRoute
+    }
+    '/api/prompts/$id/test': {
+      id: '/api/prompts/$id/test'
+      path: '/test'
+      fullPath: '/api/prompts/$id/test'
+      preLoaderRoute: typeof ApiPromptsIdTestRouteImport
+      parentRoute: typeof ApiPromptsIdRoute
+    }
+    '/api/knowledge/sources/$id': {
+      id: '/api/knowledge/sources/$id'
+      path: '/$id'
+      fullPath: '/api/knowledge/sources/$id'
+      preLoaderRoute: typeof ApiKnowledgeSourcesIdRouteImport
+      parentRoute: typeof ApiKnowledgeSourcesRoute
+    }
+    '/api/jobs/$id/retry': {
+      id: '/api/jobs/$id/retry'
+      path: '/retry'
+      fullPath: '/api/jobs/$id/retry'
+      preLoaderRoute: typeof ApiJobsIdRetryRouteImport
+      parentRoute: typeof ApiJobsIdRoute
+    }
+    '/api/jobs/$id/cancel': {
+      id: '/api/jobs/$id/cancel'
+      path: '/cancel'
+      fullPath: '/api/jobs/$id/cancel'
+      preLoaderRoute: typeof ApiJobsIdCancelRouteImport
+      parentRoute: typeof ApiJobsIdRoute
+    }
+    '/api/integrations/config/status': {
+      id: '/api/integrations/config/status'
+      path: '/api/integrations/config/status'
+      fullPath: '/api/integrations/config/status'
+      preLoaderRoute: typeof ApiIntegrationsConfigStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/integrations/config/save': {
+      id: '/api/integrations/config/save'
+      path: '/api/integrations/config/save'
+      fullPath: '/api/integrations/config/save'
+      preLoaderRoute: typeof ApiIntegrationsConfigSaveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/integrations/$id/test': {
+      id: '/api/integrations/$id/test'
+      path: '/api/integrations/$id/test'
+      fullPath: '/api/integrations/$id/test'
+      preLoaderRoute: typeof ApiIntegrationsIdTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/integrations/$id/secret': {
+      id: '/api/integrations/$id/secret'
+      path: '/api/integrations/$id/secret'
+      fullPath: '/api/integrations/$id/secret'
+      preLoaderRoute: typeof ApiIntegrationsIdSecretRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/data/jobs/$id': {
+      id: '/api/data/jobs/$id'
+      path: '/$id'
+      fullPath: '/api/data/jobs/$id'
+      preLoaderRoute: typeof ApiDataJobsIdRouteImport
+      parentRoute: typeof ApiDataJobsRoute
+    }
+    '/api/data/jobs/$id/send-to-knowledge-base': {
+      id: '/api/data/jobs/$id/send-to-knowledge-base'
+      path: '/send-to-knowledge-base'
+      fullPath: '/api/data/jobs/$id/send-to-knowledge-base'
+      preLoaderRoute: typeof ApiDataJobsIdSendToKnowledgeBaseRouteImport
+      parentRoute: typeof ApiDataJobsIdRoute
+    }
+    '/api/data/jobs/$id/retry': {
+      id: '/api/data/jobs/$id/retry'
+      path: '/retry'
+      fullPath: '/api/data/jobs/$id/retry'
+      preLoaderRoute: typeof ApiDataJobsIdRetryRouteImport
+      parentRoute: typeof ApiDataJobsIdRoute
+    }
+    '/api/data/jobs/$id/export': {
+      id: '/api/data/jobs/$id/export'
+      path: '/export'
+      fullPath: '/api/data/jobs/$id/export'
+      preLoaderRoute: typeof ApiDataJobsIdExportRouteImport
+      parentRoute: typeof ApiDataJobsIdRoute
+    }
+    '/api/data/jobs/$id/approve': {
+      id: '/api/data/jobs/$id/approve'
+      path: '/approve'
+      fullPath: '/api/data/jobs/$id/approve'
+      preLoaderRoute: typeof ApiDataJobsIdApproveRouteImport
+      parentRoute: typeof ApiDataJobsIdRoute
+    }
   }
 }
 
@@ -288,20 +939,133 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface ApiJobsIdRouteChildren {
+  ApiJobsIdCancelRoute: typeof ApiJobsIdCancelRoute
+  ApiJobsIdRetryRoute: typeof ApiJobsIdRetryRoute
+}
+
+const ApiJobsIdRouteChildren: ApiJobsIdRouteChildren = {
+  ApiJobsIdCancelRoute: ApiJobsIdCancelRoute,
+  ApiJobsIdRetryRoute: ApiJobsIdRetryRoute,
+}
+
+const ApiJobsIdRouteWithChildren = ApiJobsIdRoute._addFileChildren(
+  ApiJobsIdRouteChildren,
+)
+
+interface ApiJobsRouteChildren {
+  ApiJobsIdRoute: typeof ApiJobsIdRouteWithChildren
+}
+
+const ApiJobsRouteChildren: ApiJobsRouteChildren = {
+  ApiJobsIdRoute: ApiJobsIdRouteWithChildren,
+}
+
+const ApiJobsRouteWithChildren =
+  ApiJobsRoute._addFileChildren(ApiJobsRouteChildren)
+
+interface ApiPromptsIdRouteChildren {
+  ApiPromptsIdTestRoute: typeof ApiPromptsIdTestRoute
+}
+
+const ApiPromptsIdRouteChildren: ApiPromptsIdRouteChildren = {
+  ApiPromptsIdTestRoute: ApiPromptsIdTestRoute,
+}
+
+const ApiPromptsIdRouteWithChildren = ApiPromptsIdRoute._addFileChildren(
+  ApiPromptsIdRouteChildren,
+)
+
+interface ApiPromptsRouteChildren {
+  ApiPromptsIdRoute: typeof ApiPromptsIdRouteWithChildren
+}
+
+const ApiPromptsRouteChildren: ApiPromptsRouteChildren = {
+  ApiPromptsIdRoute: ApiPromptsIdRouteWithChildren,
+}
+
+const ApiPromptsRouteWithChildren = ApiPromptsRoute._addFileChildren(
+  ApiPromptsRouteChildren,
+)
+
+interface ApiToolsRouteChildren {
+  ApiToolsIdTestRoute: typeof ApiToolsIdTestRoute
+}
+
+const ApiToolsRouteChildren: ApiToolsRouteChildren = {
+  ApiToolsIdTestRoute: ApiToolsIdTestRoute,
+}
+
+const ApiToolsRouteWithChildren = ApiToolsRoute._addFileChildren(
+  ApiToolsRouteChildren,
+)
+
+interface ApiDataJobsIdRouteChildren {
+  ApiDataJobsIdApproveRoute: typeof ApiDataJobsIdApproveRoute
+  ApiDataJobsIdExportRoute: typeof ApiDataJobsIdExportRoute
+  ApiDataJobsIdRetryRoute: typeof ApiDataJobsIdRetryRoute
+  ApiDataJobsIdSendToKnowledgeBaseRoute: typeof ApiDataJobsIdSendToKnowledgeBaseRoute
+}
+
+const ApiDataJobsIdRouteChildren: ApiDataJobsIdRouteChildren = {
+  ApiDataJobsIdApproveRoute: ApiDataJobsIdApproveRoute,
+  ApiDataJobsIdExportRoute: ApiDataJobsIdExportRoute,
+  ApiDataJobsIdRetryRoute: ApiDataJobsIdRetryRoute,
+  ApiDataJobsIdSendToKnowledgeBaseRoute: ApiDataJobsIdSendToKnowledgeBaseRoute,
+}
+
+const ApiDataJobsIdRouteWithChildren = ApiDataJobsIdRoute._addFileChildren(
+  ApiDataJobsIdRouteChildren,
+)
+
+interface ApiDataJobsRouteChildren {
+  ApiDataJobsIdRoute: typeof ApiDataJobsIdRouteWithChildren
+}
+
+const ApiDataJobsRouteChildren: ApiDataJobsRouteChildren = {
+  ApiDataJobsIdRoute: ApiDataJobsIdRouteWithChildren,
+}
+
+const ApiDataJobsRouteWithChildren = ApiDataJobsRoute._addFileChildren(
+  ApiDataJobsRouteChildren,
+)
+
+interface ApiKnowledgeSourcesRouteChildren {
+  ApiKnowledgeSourcesIdRoute: typeof ApiKnowledgeSourcesIdRoute
+}
+
+const ApiKnowledgeSourcesRouteChildren: ApiKnowledgeSourcesRouteChildren = {
+  ApiKnowledgeSourcesIdRoute: ApiKnowledgeSourcesIdRoute,
+}
+
+const ApiKnowledgeSourcesRouteWithChildren =
+  ApiKnowledgeSourcesRoute._addFileChildren(ApiKnowledgeSourcesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  ApiJobsRoute: ApiJobsRouteWithChildren,
+  ApiPromptsRoute: ApiPromptsRouteWithChildren,
+  ApiToolsRoute: ApiToolsRouteWithChildren,
+  ApiAiChatRoute: ApiAiChatRoute,
+  ApiAnalyticsOverviewRoute: ApiAnalyticsOverviewRoute,
+  ApiAuthLoginRoute: ApiAuthLoginRoute,
+  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
+  ApiAuthMeRoute: ApiAuthMeRoute,
+  ApiAuthRefreshRoute: ApiAuthRefreshRoute,
+  ApiDashboardOverviewRoute: ApiDashboardOverviewRoute,
+  ApiDataAnalyzeRoute: ApiDataAnalyzeRoute,
+  ApiDataJobsRoute: ApiDataJobsRouteWithChildren,
+  ApiDataUploadRoute: ApiDataUploadRoute,
+  ApiIntegrationsHealthRoute: ApiIntegrationsHealthRoute,
+  ApiKnowledgeReindexRoute: ApiKnowledgeReindexRoute,
+  ApiKnowledgeSourcesRoute: ApiKnowledgeSourcesRouteWithChildren,
+  ApiKnowledgeUploadRoute: ApiKnowledgeUploadRoute,
+  ApiIntegrationsIdSecretRoute: ApiIntegrationsIdSecretRoute,
+  ApiIntegrationsIdTestRoute: ApiIntegrationsIdTestRoute,
+  ApiIntegrationsConfigSaveRoute: ApiIntegrationsConfigSaveRoute,
+  ApiIntegrationsConfigStatusRoute: ApiIntegrationsConfigStatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
