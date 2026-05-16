@@ -9,6 +9,7 @@ import {
 import {
   LayoutDashboard,
   PlugZap,
+  HardDrive,
   FolderSearch,
   MessagesSquare,
   Library,
