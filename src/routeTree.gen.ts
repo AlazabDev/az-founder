@@ -30,6 +30,7 @@ import { Route as ApiKnowledgeSourcesRouteImport } from './routes/api/knowledge/
 import { Route as ApiKnowledgeReindexRouteImport } from './routes/api/knowledge/reindex'
 import { Route as ApiJobsIdRouteImport } from './routes/api/jobs/$id'
 import { Route as ApiIntegrationsHealthRouteImport } from './routes/api/integrations/health'
+import { Route as ApiGdriveReportRouteImport } from './routes/api/gdrive/report'
 import { Route as ApiGdriveFilesRouteImport } from './routes/api/gdrive/files'
 import { Route as ApiDataUploadRouteImport } from './routes/api/data/upload'
 import { Route as ApiDataJobsRouteImport } from './routes/api/data/jobs'
@@ -158,6 +159,11 @@ const ApiJobsIdRoute = ApiJobsIdRouteImport.update({
 const ApiIntegrationsHealthRoute = ApiIntegrationsHealthRouteImport.update({
   id: '/api/integrations/health',
   path: '/api/integrations/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGdriveReportRoute = ApiGdriveReportRouteImport.update({
+  id: '/api/gdrive/report',
+  path: '/api/gdrive/report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiGdriveFilesRoute = ApiGdriveFilesRouteImport.update({
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
   '/api/data/upload': typeof ApiDataUploadRoute
   '/api/gdrive/files': typeof ApiGdriveFilesRoute
+  '/api/gdrive/report': typeof ApiGdriveReportRoute
   '/api/integrations/health': typeof ApiIntegrationsHealthRoute
   '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
   '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
@@ -362,6 +369,7 @@ export interface FileRoutesByTo {
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
   '/api/data/upload': typeof ApiDataUploadRoute
   '/api/gdrive/files': typeof ApiGdriveFilesRoute
+  '/api/gdrive/report': typeof ApiGdriveReportRoute
   '/api/integrations/health': typeof ApiIntegrationsHealthRoute
   '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
   '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
@@ -411,6 +419,7 @@ export interface FileRoutesById {
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
   '/api/data/upload': typeof ApiDataUploadRoute
   '/api/gdrive/files': typeof ApiGdriveFilesRoute
+  '/api/gdrive/report': typeof ApiGdriveReportRoute
   '/api/integrations/health': typeof ApiIntegrationsHealthRoute
   '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
   '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
@@ -460,6 +469,7 @@ export interface FileRouteTypes {
     | '/api/data/jobs'
     | '/api/data/upload'
     | '/api/gdrive/files'
+    | '/api/gdrive/report'
     | '/api/integrations/health'
     | '/api/jobs/$id'
     | '/api/knowledge/reindex'
@@ -507,6 +517,7 @@ export interface FileRouteTypes {
     | '/api/data/jobs'
     | '/api/data/upload'
     | '/api/gdrive/files'
+    | '/api/gdrive/report'
     | '/api/integrations/health'
     | '/api/jobs/$id'
     | '/api/knowledge/reindex'
@@ -555,6 +566,7 @@ export interface FileRouteTypes {
     | '/api/data/jobs'
     | '/api/data/upload'
     | '/api/gdrive/files'
+    | '/api/gdrive/report'
     | '/api/integrations/health'
     | '/api/jobs/$id'
     | '/api/knowledge/reindex'
@@ -594,6 +606,7 @@ export interface RootRouteChildren {
   ApiDataJobsRoute: typeof ApiDataJobsRouteWithChildren
   ApiDataUploadRoute: typeof ApiDataUploadRoute
   ApiGdriveFilesRoute: typeof ApiGdriveFilesRoute
+  ApiGdriveReportRoute: typeof ApiGdriveReportRoute
   ApiIntegrationsHealthRoute: typeof ApiIntegrationsHealthRoute
   ApiKnowledgeReindexRoute: typeof ApiKnowledgeReindexRoute
   ApiKnowledgeSourcesRoute: typeof ApiKnowledgeSourcesRouteWithChildren
@@ -751,6 +764,13 @@ declare module '@tanstack/react-router' {
       path: '/api/integrations/health'
       fullPath: '/api/integrations/health'
       preLoaderRoute: typeof ApiIntegrationsHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gdrive/report': {
+      id: '/api/gdrive/report'
+      path: '/api/gdrive/report'
+      fullPath: '/api/gdrive/report'
+      preLoaderRoute: typeof ApiGdriveReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/gdrive/files': {
@@ -1078,6 +1098,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDataJobsRoute: ApiDataJobsRouteWithChildren,
   ApiDataUploadRoute: ApiDataUploadRoute,
   ApiGdriveFilesRoute: ApiGdriveFilesRoute,
+  ApiGdriveReportRoute: ApiGdriveReportRoute,
   ApiIntegrationsHealthRoute: ApiIntegrationsHealthRoute,
   ApiKnowledgeReindexRoute: ApiKnowledgeReindexRoute,
   ApiKnowledgeSourcesRoute: ApiKnowledgeSourcesRouteWithChildren,
