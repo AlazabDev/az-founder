@@ -21,6 +21,7 @@ import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
 import { Route as AppJobsRouteImport } from './routes/_app/jobs'
 import { Route as AppIntegrationsRouteImport } from './routes/_app/integrations'
+import { Route as AppGdriveRouteImport } from './routes/_app/gdrive'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
@@ -114,6 +115,11 @@ const AppJobsRoute = AppJobsRouteImport.update({
 const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
   id: '/integrations',
   path: '/integrations',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGdriveRoute = AppGdriveRouteImport.update({
+  id: '/gdrive',
+  path: '/gdrive',
   getParentRoute: () => AppRoute,
 } as any)
 const AppDataRoute = AppDataRouteImport.update({
@@ -301,6 +307,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AppAnalyticsRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
+  '/gdrive': typeof AppGdriveRoute
   '/integrations': typeof AppIntegrationsRoute
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
@@ -348,6 +355,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AppAnalyticsRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
+  '/gdrive': typeof AppGdriveRoute
   '/integrations': typeof AppIntegrationsRoute
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
@@ -398,6 +406,7 @@ export interface FileRoutesById {
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/chat': typeof AppChatRoute
   '/_app/data': typeof AppDataRoute
+  '/_app/gdrive': typeof AppGdriveRoute
   '/_app/integrations': typeof AppIntegrationsRoute
   '/_app/jobs': typeof AppJobsRoute
   '/_app/knowledge': typeof AppKnowledgeRoute
@@ -449,6 +458,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/chat'
     | '/data'
+    | '/gdrive'
     | '/integrations'
     | '/jobs'
     | '/knowledge'
@@ -496,6 +506,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/chat'
     | '/data'
+    | '/gdrive'
     | '/integrations'
     | '/jobs'
     | '/knowledge'
@@ -545,6 +556,7 @@ export interface FileRouteTypes {
     | '/_app/analytics'
     | '/_app/chat'
     | '/_app/data'
+    | '/_app/gdrive'
     | '/_app/integrations'
     | '/_app/jobs'
     | '/_app/knowledge'
@@ -701,6 +713,13 @@ declare module '@tanstack/react-router' {
       path: '/integrations'
       fullPath: '/integrations'
       preLoaderRoute: typeof AppIntegrationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gdrive': {
+      id: '/_app/gdrive'
+      path: '/gdrive'
+      fullPath: '/gdrive'
+      preLoaderRoute: typeof AppGdriveRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/data': {
@@ -955,6 +974,7 @@ interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppChatRoute: typeof AppChatRoute
   AppDataRoute: typeof AppDataRoute
+  AppGdriveRoute: typeof AppGdriveRoute
   AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppJobsRoute: typeof AppJobsRoute
   AppKnowledgeRoute: typeof AppKnowledgeRoute
@@ -968,6 +988,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAnalyticsRoute: AppAnalyticsRoute,
   AppChatRoute: AppChatRoute,
   AppDataRoute: AppDataRoute,
+  AppGdriveRoute: AppGdriveRoute,
   AppIntegrationsRoute: AppIntegrationsRoute,
   AppJobsRoute: AppJobsRoute,
   AppKnowledgeRoute: AppKnowledgeRoute,
@@ -1111,3 +1132,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
