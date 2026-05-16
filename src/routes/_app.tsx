@@ -9,6 +9,7 @@ import {
 import {
   LayoutDashboard,
   PlugZap,
+  HardDrive,
   FolderSearch,
   MessagesSquare,
   Library,
@@ -45,6 +46,7 @@ const NAV: NavItem[] = [
   { to: "/", label: "لوحة التحكم", icon: LayoutDashboard, exact: true },
   { to: "/integrations", label: "الربط والمعرفات", icon: PlugZap },
   { to: "/data", label: "فحص وتنظيم البيانات", icon: FolderSearch },
+  { to: "/gdrive", label: "Google Drive", icon: HardDrive },
   { to: "/chat", label: "المحادثة الذكية", icon: MessagesSquare },
   { to: "/knowledge", label: "قاعدة المعرفة", icon: Library },
   { to: "/prompts", label: "استوديو البرومبت", icon: Sparkles },

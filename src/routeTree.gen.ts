@@ -21,6 +21,7 @@ import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
 import { Route as AppJobsRouteImport } from './routes/_app/jobs'
 import { Route as AppIntegrationsRouteImport } from './routes/_app/integrations'
+import { Route as AppGdriveRouteImport } from './routes/_app/gdrive'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
@@ -30,6 +31,8 @@ import { Route as ApiKnowledgeSourcesRouteImport } from './routes/api/knowledge/
 import { Route as ApiKnowledgeReindexRouteImport } from './routes/api/knowledge/reindex'
 import { Route as ApiJobsIdRouteImport } from './routes/api/jobs/$id'
 import { Route as ApiIntegrationsHealthRouteImport } from './routes/api/integrations/health'
+import { Route as ApiGdriveReportRouteImport } from './routes/api/gdrive/report'
+import { Route as ApiGdriveFilesRouteImport } from './routes/api/gdrive/files'
 import { Route as ApiDataUploadRouteImport } from './routes/api/data/upload'
 import { Route as ApiDataJobsRouteImport } from './routes/api/data/jobs'
 import { Route as ApiDataAnalyzeRouteImport } from './routes/api/data/analyze'
@@ -114,6 +117,11 @@ const AppIntegrationsRoute = AppIntegrationsRouteImport.update({
   path: '/integrations',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGdriveRoute = AppGdriveRouteImport.update({
+  id: '/gdrive',
+  path: '/gdrive',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDataRoute = AppDataRouteImport.update({
   id: '/data',
   path: '/data',
@@ -157,6 +165,16 @@ const ApiJobsIdRoute = ApiJobsIdRouteImport.update({
 const ApiIntegrationsHealthRoute = ApiIntegrationsHealthRouteImport.update({
   id: '/api/integrations/health',
   path: '/api/integrations/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGdriveReportRoute = ApiGdriveReportRouteImport.update({
+  id: '/api/gdrive/report',
+  path: '/api/gdrive/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGdriveFilesRoute = ApiGdriveFilesRouteImport.update({
+  id: '/api/gdrive/files',
+  path: '/api/gdrive/files',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiDataUploadRoute = ApiDataUploadRouteImport.update({
@@ -289,6 +307,7 @@ export interface FileRoutesByFullPath {
   '/analytics': typeof AppAnalyticsRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
+  '/gdrive': typeof AppGdriveRoute
   '/integrations': typeof AppIntegrationsRoute
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
@@ -308,6 +327,8 @@ export interface FileRoutesByFullPath {
   '/api/data/analyze': typeof ApiDataAnalyzeRoute
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
   '/api/data/upload': typeof ApiDataUploadRoute
+  '/api/gdrive/files': typeof ApiGdriveFilesRoute
+  '/api/gdrive/report': typeof ApiGdriveReportRoute
   '/api/integrations/health': typeof ApiIntegrationsHealthRoute
   '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
   '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
@@ -334,6 +355,7 @@ export interface FileRoutesByTo {
   '/analytics': typeof AppAnalyticsRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
+  '/gdrive': typeof AppGdriveRoute
   '/integrations': typeof AppIntegrationsRoute
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
@@ -354,6 +376,8 @@ export interface FileRoutesByTo {
   '/api/data/analyze': typeof ApiDataAnalyzeRoute
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
   '/api/data/upload': typeof ApiDataUploadRoute
+  '/api/gdrive/files': typeof ApiGdriveFilesRoute
+  '/api/gdrive/report': typeof ApiGdriveReportRoute
   '/api/integrations/health': typeof ApiIntegrationsHealthRoute
   '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
   '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
@@ -382,6 +406,7 @@ export interface FileRoutesById {
   '/_app/analytics': typeof AppAnalyticsRoute
   '/_app/chat': typeof AppChatRoute
   '/_app/data': typeof AppDataRoute
+  '/_app/gdrive': typeof AppGdriveRoute
   '/_app/integrations': typeof AppIntegrationsRoute
   '/_app/jobs': typeof AppJobsRoute
   '/_app/knowledge': typeof AppKnowledgeRoute
@@ -402,6 +427,8 @@ export interface FileRoutesById {
   '/api/data/analyze': typeof ApiDataAnalyzeRoute
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
   '/api/data/upload': typeof ApiDataUploadRoute
+  '/api/gdrive/files': typeof ApiGdriveFilesRoute
+  '/api/gdrive/report': typeof ApiGdriveReportRoute
   '/api/integrations/health': typeof ApiIntegrationsHealthRoute
   '/api/jobs/$id': typeof ApiJobsIdRouteWithChildren
   '/api/knowledge/reindex': typeof ApiKnowledgeReindexRoute
@@ -431,6 +458,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/chat'
     | '/data'
+    | '/gdrive'
     | '/integrations'
     | '/jobs'
     | '/knowledge'
@@ -450,6 +478,8 @@ export interface FileRouteTypes {
     | '/api/data/analyze'
     | '/api/data/jobs'
     | '/api/data/upload'
+    | '/api/gdrive/files'
+    | '/api/gdrive/report'
     | '/api/integrations/health'
     | '/api/jobs/$id'
     | '/api/knowledge/reindex'
@@ -476,6 +506,7 @@ export interface FileRouteTypes {
     | '/analytics'
     | '/chat'
     | '/data'
+    | '/gdrive'
     | '/integrations'
     | '/jobs'
     | '/knowledge'
@@ -496,6 +527,8 @@ export interface FileRouteTypes {
     | '/api/data/analyze'
     | '/api/data/jobs'
     | '/api/data/upload'
+    | '/api/gdrive/files'
+    | '/api/gdrive/report'
     | '/api/integrations/health'
     | '/api/jobs/$id'
     | '/api/knowledge/reindex'
@@ -523,6 +556,7 @@ export interface FileRouteTypes {
     | '/_app/analytics'
     | '/_app/chat'
     | '/_app/data'
+    | '/_app/gdrive'
     | '/_app/integrations'
     | '/_app/jobs'
     | '/_app/knowledge'
@@ -543,6 +577,8 @@ export interface FileRouteTypes {
     | '/api/data/analyze'
     | '/api/data/jobs'
     | '/api/data/upload'
+    | '/api/gdrive/files'
+    | '/api/gdrive/report'
     | '/api/integrations/health'
     | '/api/jobs/$id'
     | '/api/knowledge/reindex'
@@ -581,6 +617,8 @@ export interface RootRouteChildren {
   ApiDataAnalyzeRoute: typeof ApiDataAnalyzeRoute
   ApiDataJobsRoute: typeof ApiDataJobsRouteWithChildren
   ApiDataUploadRoute: typeof ApiDataUploadRoute
+  ApiGdriveFilesRoute: typeof ApiGdriveFilesRoute
+  ApiGdriveReportRoute: typeof ApiGdriveReportRoute
   ApiIntegrationsHealthRoute: typeof ApiIntegrationsHealthRoute
   ApiKnowledgeReindexRoute: typeof ApiKnowledgeReindexRoute
   ApiKnowledgeSourcesRoute: typeof ApiKnowledgeSourcesRouteWithChildren
@@ -677,6 +715,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIntegrationsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/gdrive': {
+      id: '/_app/gdrive'
+      path: '/gdrive'
+      fullPath: '/gdrive'
+      preLoaderRoute: typeof AppGdriveRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/data': {
       id: '/_app/data'
       path: '/data'
@@ -738,6 +783,20 @@ declare module '@tanstack/react-router' {
       path: '/api/integrations/health'
       fullPath: '/api/integrations/health'
       preLoaderRoute: typeof ApiIntegrationsHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gdrive/report': {
+      id: '/api/gdrive/report'
+      path: '/api/gdrive/report'
+      fullPath: '/api/gdrive/report'
+      preLoaderRoute: typeof ApiGdriveReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gdrive/files': {
+      id: '/api/gdrive/files'
+      path: '/api/gdrive/files'
+      fullPath: '/api/gdrive/files'
+      preLoaderRoute: typeof ApiGdriveFilesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/data/upload': {
@@ -915,6 +974,7 @@ interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppChatRoute: typeof AppChatRoute
   AppDataRoute: typeof AppDataRoute
+  AppGdriveRoute: typeof AppGdriveRoute
   AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppJobsRoute: typeof AppJobsRoute
   AppKnowledgeRoute: typeof AppKnowledgeRoute
@@ -928,6 +988,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAnalyticsRoute: AppAnalyticsRoute,
   AppChatRoute: AppChatRoute,
   AppDataRoute: AppDataRoute,
+  AppGdriveRoute: AppGdriveRoute,
   AppIntegrationsRoute: AppIntegrationsRoute,
   AppJobsRoute: AppJobsRoute,
   AppKnowledgeRoute: AppKnowledgeRoute,
@@ -1057,6 +1118,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiDataAnalyzeRoute: ApiDataAnalyzeRoute,
   ApiDataJobsRoute: ApiDataJobsRouteWithChildren,
   ApiDataUploadRoute: ApiDataUploadRoute,
+  ApiGdriveFilesRoute: ApiGdriveFilesRoute,
+  ApiGdriveReportRoute: ApiGdriveReportRoute,
   ApiIntegrationsHealthRoute: ApiIntegrationsHealthRoute,
   ApiKnowledgeReindexRoute: ApiKnowledgeReindexRoute,
   ApiKnowledgeSourcesRoute: ApiKnowledgeSourcesRouteWithChildren,
