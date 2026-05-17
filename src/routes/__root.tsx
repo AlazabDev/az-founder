@@ -111,6 +111,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  React.useEffect(() => {
+    let mounted = true;
+    void hydrateSession();
+    const unsub = initAuthListener(() => {
+      if (!mounted) return;
+      queryClient.invalidateQueries();
+      router.invalidate();
+    });
+    return () => {
+      mounted = false;
+      unsub();
+    };
+  }, [queryClient, router]);
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={150}>
