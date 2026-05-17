@@ -22,13 +22,14 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import { isAuthenticated, clearSession, getUser } from "@/lib/auth";
+import { isAuthenticated, clearSession, getUser, hydrateSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/_app")({
-  beforeLoad: () => {
-    if (typeof window !== "undefined" && !isAuthenticated()) {
+  beforeLoad: async () => {
+    await hydrateSession();
+    if (!isAuthenticated()) {
       throw redirect({ to: "/login" });
     }
   },
