@@ -62,8 +62,8 @@ function AppLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const user = getUser();
 
-  function handleLogout() {
-    clearSession();
+  async function handleLogout() {
+    await clearSession();
     navigate({ to: "/login" });
   }
 
