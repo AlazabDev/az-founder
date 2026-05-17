@@ -114,7 +114,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
-  React.useEffect(() => {
+  useEffect(() => {
     let mounted = true;
     void hydrateSession();
     const unsub = initAuthListener(() => {
