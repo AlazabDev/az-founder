@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <header class="header">
+        <img src="apim-Azure.svg" alt="Icon" class="icon">
+        <h1 class="title">API Management + Azure OpenAI</h1>
+    </header>
+    <main class="chat-container">
+        <div id="chat" class="chat">
+            <!-- Chat messages will go here -->
+          </div>
+          <div class="input-container">
+            <input type="text" id="inputBox" class="chat-input" placeholder="Type a new question ...">
+            <button id="sendButton" class="send-btn">Send</button>
+          </div>
+    </main>
+    <div id="spinner" class="spinner" style="display: none;">Loading...</div>
+    <script src="app.js"></script>
+</body>
+</html>
