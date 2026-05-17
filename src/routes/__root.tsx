@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -9,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { hydrateSession, initAuthListener } from "@/lib/auth";
 
 import appCss from "../styles.css?url";
 
@@ -111,6 +113,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  useEffect(() => {
+    let mounted = true;
+    void hydrateSession();
+    const unsub = initAuthListener(() => {
+      if (!mounted) return;
+      queryClient.invalidateQueries();
+      router.invalidate();
+    });
+    return () => {
+      mounted = false;
+      unsub();
+    };
+  }, [queryClient, router]);
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider delayDuration={150}>
