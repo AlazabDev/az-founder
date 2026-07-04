@@ -63,8 +63,9 @@ function EndpointsPage() {
   const testMut = useMutation({
     mutationFn: (id: string) => test({ data: { id } }),
     onSuccess: (r) => {
-      if (r.ok) toast.success(`متصل ✓ (${r.latency_ms}ms)`);
-      else toast.error(`فشل: ${r.error ?? r.status}`);
+      const res = r as { ok: boolean; latency_ms?: number; status?: number; error?: string };
+      if (res.ok) toast.success(`متصل ✓ (${res.latency_ms}ms)`);
+      else toast.error(`فشل: ${res.error ?? res.status}`);
     },
   });
 

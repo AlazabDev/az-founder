@@ -46,6 +46,7 @@ import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAnalyticsOverviewRouteImport } from './routes/api/analytics/overview'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
+import { Route as AppAiGatewayEndpointsRouteImport } from './routes/_app/ai-gateway.endpoints'
 import { Route as ApiToolsIdTestRouteImport } from './routes/api/tools/$id/test'
 import { Route as ApiPromptsIdTestRouteImport } from './routes/api/prompts/$id/test'
 import { Route as ApiKnowledgeSourcesIdRouteImport } from './routes/api/knowledge/sources/$id'
@@ -245,6 +246,11 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   path: '/api/ai/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAiGatewayEndpointsRoute = AppAiGatewayEndpointsRouteImport.update({
+  id: '/ai-gateway/endpoints',
+  path: '/ai-gateway/endpoints',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiToolsIdTestRoute = ApiToolsIdTestRouteImport.update({
   id: '/$id/test',
   path: '/$id/test',
@@ -337,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
+  '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -389,6 +396,7 @@ export interface FileRoutesByTo {
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/': typeof AppIndexRoute
+  '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -443,6 +451,7 @@ export interface FileRoutesById {
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/_app/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -497,6 +506,7 @@ export interface FileRouteTypes {
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
+    | '/ai-gateway/endpoints'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -549,6 +559,7 @@ export interface FileRouteTypes {
     | '/api/prompts'
     | '/api/tools'
     | '/'
+    | '/ai-gateway/endpoints'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -602,6 +613,7 @@ export interface FileRouteTypes {
     | '/api/prompts'
     | '/api/tools'
     | '/_app/'
+    | '/_app/ai-gateway/endpoints'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -928,6 +940,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/ai-gateway/endpoints': {
+      id: '/_app/ai-gateway/endpoints'
+      path: '/ai-gateway/endpoints'
+      fullPath: '/ai-gateway/endpoints'
+      preLoaderRoute: typeof AppAiGatewayEndpointsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/tools/$id/test': {
       id: '/api/tools/$id/test'
       path: '/$id/test'
@@ -1041,6 +1060,7 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppToolsRoute: typeof AppToolsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAiGatewayEndpointsRoute: typeof AppAiGatewayEndpointsRoute
   AppAiGatewayIndexRoute: typeof AppAiGatewayIndexRoute
 }
 
@@ -1056,6 +1076,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppToolsRoute: AppToolsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAiGatewayEndpointsRoute: AppAiGatewayEndpointsRoute,
   AppAiGatewayIndexRoute: AppAiGatewayIndexRoute,
 }
 
