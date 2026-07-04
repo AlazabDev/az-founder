@@ -18,6 +18,7 @@ import { Route as ApiPromptsRouteImport } from './routes/api/prompts'
 import { Route as ApiJobsRouteImport } from './routes/api/jobs'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppToolsRouteImport } from './routes/_app/tools'
+import { Route as AppStorageRouteImport } from './routes/_app/storage'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
@@ -106,6 +107,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
 const AppToolsRoute = AppToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStorageRoute = AppStorageRouteImport.update({
+  id: '/storage',
+  path: '/storage',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -350,6 +356,7 @@ export interface FileRoutesByFullPath {
   '/knowledge': typeof AppKnowledgeRoute
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
+  '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
@@ -404,6 +411,7 @@ export interface FileRoutesByTo {
   '/knowledge': typeof AppKnowledgeRoute
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
+  '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
@@ -461,6 +469,7 @@ export interface FileRoutesById {
   '/_app/knowledge': typeof AppKnowledgeRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/storage': typeof AppStorageRoute
   '/_app/tools': typeof AppToolsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
@@ -519,6 +528,7 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/prompts'
     | '/settings'
+    | '/storage'
     | '/tools'
     | '/api/chat'
     | '/api/jobs'
@@ -573,6 +583,7 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/prompts'
     | '/settings'
+    | '/storage'
     | '/tools'
     | '/api/chat'
     | '/api/jobs'
@@ -629,6 +640,7 @@ export interface FileRouteTypes {
     | '/_app/knowledge'
     | '/_app/prompts'
     | '/_app/settings'
+    | '/_app/storage'
     | '/_app/tools'
     | '/api/chat'
     | '/api/jobs'
@@ -766,6 +778,13 @@ declare module '@tanstack/react-router' {
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof AppToolsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/storage': {
+      id: '/_app/storage'
+      path: '/storage'
+      fullPath: '/storage'
+      preLoaderRoute: typeof AppStorageRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/settings': {
@@ -1096,6 +1115,7 @@ interface AppRouteChildren {
   AppKnowledgeRoute: typeof AppKnowledgeRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppStorageRoute: typeof AppStorageRoute
   AppToolsRoute: typeof AppToolsRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAiGatewayEndpointsRoute: typeof AppAiGatewayEndpointsRoute
@@ -1114,6 +1134,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppKnowledgeRoute: AppKnowledgeRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppStorageRoute: AppStorageRoute,
   AppToolsRoute: AppToolsRoute,
   AppIndexRoute: AppIndexRoute,
   AppAiGatewayEndpointsRoute: AppAiGatewayEndpointsRoute,
