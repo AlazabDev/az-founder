@@ -14,6 +14,263 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_conversations: {
+        Row: {
+          created_at: string
+          endpoint_id: string | null
+          id: string
+          system_prompt: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          endpoint_id?: string | null
+          id?: string
+          system_prompt?: string | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          endpoint_id?: string | null
+          id?: string
+          system_prompt?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_endpoint_id_fkey"
+            columns: ["endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "ai_endpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_endpoints: {
+        Row: {
+          api_version: string | null
+          base_url: string | null
+          created_at: string
+          created_by: string | null
+          deployment_name: string | null
+          enabled: boolean
+          id: string
+          is_default: boolean
+          model: string
+          name: string
+          provider: Database["public"]["Enums"]["ai_provider"]
+          updated_at: string
+          use_apim: boolean
+        }
+        Insert: {
+          api_version?: string | null
+          base_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          deployment_name?: string | null
+          enabled?: boolean
+          id?: string
+          is_default?: boolean
+          model: string
+          name: string
+          provider: Database["public"]["Enums"]["ai_provider"]
+          updated_at?: string
+          use_apim?: boolean
+        }
+        Update: {
+          api_version?: string | null
+          base_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          deployment_name?: string | null
+          enabled?: boolean
+          id?: string
+          is_default?: boolean
+          model?: string
+          name?: string
+          provider?: Database["public"]["Enums"]["ai_provider"]
+          updated_at?: string
+          use_apim?: boolean
+        }
+        Relationships: []
+      }
+      ai_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          parts: Json | null
+          role: Database["public"]["Enums"]["message_role"]
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          parts?: Json | null
+          role: Database["public"]["Enums"]["message_role"]
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          parts?: Json | null
+          role?: Database["public"]["Enums"]["message_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_usage_logs: {
+        Row: {
+          completion_tokens: number
+          conversation_id: string | null
+          created_at: string
+          endpoint_id: string | null
+          error: string | null
+          flagged: boolean
+          id: string
+          latency_ms: number | null
+          model: string | null
+          prompt_tokens: number
+          request_id: string | null
+          status: Database["public"]["Enums"]["usage_status"]
+          total_cost_usd: number
+          total_tokens: number
+          user_id: string | null
+        }
+        Insert: {
+          completion_tokens?: number
+          conversation_id?: string | null
+          created_at?: string
+          endpoint_id?: string | null
+          error?: string | null
+          flagged?: boolean
+          id?: string
+          latency_ms?: number | null
+          model?: string | null
+          prompt_tokens?: number
+          request_id?: string | null
+          status?: Database["public"]["Enums"]["usage_status"]
+          total_cost_usd?: number
+          total_tokens?: number
+          user_id?: string | null
+        }
+        Update: {
+          completion_tokens?: number
+          conversation_id?: string | null
+          created_at?: string
+          endpoint_id?: string | null
+          error?: string | null
+          flagged?: boolean
+          id?: string
+          latency_ms?: number | null
+          model?: string | null
+          prompt_tokens?: number
+          request_id?: string | null
+          status?: Database["public"]["Enums"]["usage_status"]
+          total_cost_usd?: number
+          total_tokens?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_usage_logs_endpoint_id_fkey"
+            columns: ["endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "ai_endpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      apim_policies: {
+        Row: {
+          applies_to_endpoint_id: string | null
+          config: Json
+          created_at: string
+          enabled: boolean
+          id: string
+          name: string
+          policy_type: Database["public"]["Enums"]["policy_type"]
+          updated_at: string
+        }
+        Insert: {
+          applies_to_endpoint_id?: string | null
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name: string
+          policy_type: Database["public"]["Enums"]["policy_type"]
+          updated_at?: string
+        }
+        Update: {
+          applies_to_endpoint_id?: string | null
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          name?: string
+          policy_type?: Database["public"]["Enums"]["policy_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "apim_policies_applies_to_endpoint_id_fkey"
+            columns: ["applies_to_endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "ai_endpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      model_pricing: {
+        Row: {
+          currency: string
+          id: string
+          input_per_1k: number
+          model: string
+          output_per_1k: number
+          updated_at: string
+        }
+        Insert: {
+          currency?: string
+          id?: string
+          input_per_1k?: number
+          model: string
+          output_per_1k?: number
+          updated_at?: string
+        }
+        Update: {
+          currency?: string
+          id?: string
+          input_per_1k?: number
+          model?: string
+          output_per_1k?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -37,6 +294,83 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rate_limit_counters: {
+        Row: {
+          count: number
+          created_at: string
+          endpoint_id: string | null
+          id: string
+          tokens: number
+          user_id: string | null
+          window_key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          endpoint_id?: string | null
+          id?: string
+          tokens?: number
+          user_id?: string | null
+          window_key: string
+          window_start: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          endpoint_id?: string | null
+          id?: string
+          tokens?: number
+          user_id?: string | null
+          window_key?: string
+          window_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rate_limit_counters_endpoint_id_fkey"
+            columns: ["endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "ai_endpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storage_providers: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          display_name: string
+          enabled: boolean
+          id: string
+          is_default: boolean
+          provider: Database["public"]["Enums"]["storage_provider"]
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          enabled?: boolean
+          id?: string
+          is_default?: boolean
+          provider: Database["public"]["Enums"]["storage_provider"]
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          enabled?: boolean
+          id?: string
+          is_default?: boolean
+          provider?: Database["public"]["Enums"]["storage_provider"]
           updated_at?: string
         }
         Relationships: []
@@ -136,7 +470,17 @@ export type Database = {
       }
     }
     Enums: {
+      ai_provider: "azure_openai" | "openai" | "lovable" | "apim"
       app_role: "admin" | "user"
+      message_role: "system" | "user" | "assistant" | "tool"
+      policy_type:
+        | "rate_limit"
+        | "quota"
+        | "content_filter"
+        | "cost_cap"
+        | "circuit_breaker"
+      storage_provider: "azure_blob" | "aws_s3" | "google_drive" | "supabase"
+      usage_status: "success" | "blocked" | "error" | "rate_limited"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -264,7 +608,18 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      ai_provider: ["azure_openai", "openai", "lovable", "apim"],
       app_role: ["admin", "user"],
+      message_role: ["system", "user", "assistant", "tool"],
+      policy_type: [
+        "rate_limit",
+        "quota",
+        "content_filter",
+        "cost_cap",
+        "circuit_breaker",
+      ],
+      storage_provider: ["azure_blob", "aws_s3", "google_drive", "supabase"],
+      usage_status: ["success", "blocked", "error", "rate_limited"],
     },
   },
 } as const
