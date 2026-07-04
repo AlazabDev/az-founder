@@ -27,6 +27,7 @@ import { Route as AppGdriveRouteImport } from './routes/_app/gdrive'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
+import { Route as AppAiGatewayIndexRouteImport } from './routes/_app/ai-gateway.index'
 import { Route as ApiPromptsIdRouteImport } from './routes/api/prompts/$id'
 import { Route as ApiKnowledgeUploadRouteImport } from './routes/api/knowledge/upload'
 import { Route as ApiKnowledgeSourcesRouteImport } from './routes/api/knowledge/sources'
@@ -147,6 +148,11 @@ const AppChatRoute = AppChatRouteImport.update({
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiGatewayIndexRoute = AppAiGatewayIndexRouteImport.update({
+  id: '/ai-gateway/',
+  path: '/ai-gateway/',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiPromptsIdRoute = ApiPromptsIdRouteImport.update({
@@ -349,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
   '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
   '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/ai-gateway/': typeof AppAiGatewayIndexRoute
   '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
   '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
   '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
@@ -400,6 +407,7 @@ export interface FileRoutesByTo {
   '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
   '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
   '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/ai-gateway': typeof AppAiGatewayIndexRoute
   '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
   '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
   '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
@@ -453,6 +461,7 @@ export interface FileRoutesById {
   '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
   '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
   '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/_app/ai-gateway/': typeof AppAiGatewayIndexRoute
   '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
   '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
   '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
@@ -506,6 +515,7 @@ export interface FileRouteTypes {
     | '/api/knowledge/sources'
     | '/api/knowledge/upload'
     | '/api/prompts/$id'
+    | '/ai-gateway/'
     | '/api/data/jobs/$id'
     | '/api/integrations/$id/secret'
     | '/api/integrations/$id/test'
@@ -557,6 +567,7 @@ export interface FileRouteTypes {
     | '/api/knowledge/sources'
     | '/api/knowledge/upload'
     | '/api/prompts/$id'
+    | '/ai-gateway'
     | '/api/data/jobs/$id'
     | '/api/integrations/$id/secret'
     | '/api/integrations/$id/test'
@@ -609,6 +620,7 @@ export interface FileRouteTypes {
     | '/api/knowledge/sources'
     | '/api/knowledge/upload'
     | '/api/prompts/$id'
+    | '/_app/ai-gateway/'
     | '/api/data/jobs/$id'
     | '/api/integrations/$id/secret'
     | '/api/integrations/$id/test'
@@ -781,6 +793,13 @@ declare module '@tanstack/react-router' {
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ai-gateway/': {
+      id: '/_app/ai-gateway/'
+      path: '/ai-gateway'
+      fullPath: '/ai-gateway/'
+      preLoaderRoute: typeof AppAiGatewayIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/prompts/$id': {
@@ -1022,6 +1041,7 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppToolsRoute: typeof AppToolsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAiGatewayIndexRoute: typeof AppAiGatewayIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -1036,6 +1056,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppToolsRoute: AppToolsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAiGatewayIndexRoute: AppAiGatewayIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
