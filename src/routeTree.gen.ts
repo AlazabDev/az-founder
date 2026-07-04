@@ -46,6 +46,7 @@ import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAnalyticsOverviewRouteImport } from './routes/api/analytics/overview'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
+import { Route as AppAiGatewayPoliciesRouteImport } from './routes/_app/ai-gateway.policies'
 import { Route as AppAiGatewayEndpointsRouteImport } from './routes/_app/ai-gateway.endpoints'
 import { Route as ApiToolsIdTestRouteImport } from './routes/api/tools/$id/test'
 import { Route as ApiPromptsIdTestRouteImport } from './routes/api/prompts/$id/test'
@@ -246,6 +247,11 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   path: '/api/ai/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAiGatewayPoliciesRoute = AppAiGatewayPoliciesRouteImport.update({
+  id: '/ai-gateway/policies',
+  path: '/ai-gateway/policies',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAiGatewayEndpointsRoute = AppAiGatewayEndpointsRouteImport.update({
   id: '/ai-gateway/endpoints',
   path: '/ai-gateway/endpoints',
@@ -344,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
+  '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -397,6 +404,7 @@ export interface FileRoutesByTo {
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/': typeof AppIndexRoute
   '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
+  '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/_app/': typeof AppIndexRoute
   '/_app/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
+  '/_app/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -507,6 +516,7 @@ export interface FileRouteTypes {
     | '/api/prompts'
     | '/api/tools'
     | '/ai-gateway/endpoints'
+    | '/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -560,6 +570,7 @@ export interface FileRouteTypes {
     | '/api/tools'
     | '/'
     | '/ai-gateway/endpoints'
+    | '/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -614,6 +625,7 @@ export interface FileRouteTypes {
     | '/api/tools'
     | '/_app/'
     | '/_app/ai-gateway/endpoints'
+    | '/_app/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -940,6 +952,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/ai-gateway/policies': {
+      id: '/_app/ai-gateway/policies'
+      path: '/ai-gateway/policies'
+      fullPath: '/ai-gateway/policies'
+      preLoaderRoute: typeof AppAiGatewayPoliciesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/ai-gateway/endpoints': {
       id: '/_app/ai-gateway/endpoints'
       path: '/ai-gateway/endpoints'
@@ -1061,6 +1080,7 @@ interface AppRouteChildren {
   AppToolsRoute: typeof AppToolsRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAiGatewayEndpointsRoute: typeof AppAiGatewayEndpointsRoute
+  AppAiGatewayPoliciesRoute: typeof AppAiGatewayPoliciesRoute
   AppAiGatewayIndexRoute: typeof AppAiGatewayIndexRoute
 }
 
@@ -1077,6 +1097,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppToolsRoute: AppToolsRoute,
   AppIndexRoute: AppIndexRoute,
   AppAiGatewayEndpointsRoute: AppAiGatewayEndpointsRoute,
+  AppAiGatewayPoliciesRoute: AppAiGatewayPoliciesRoute,
   AppAiGatewayIndexRoute: AppAiGatewayIndexRoute,
 }
 
