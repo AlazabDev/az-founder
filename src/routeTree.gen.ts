@@ -16,6 +16,7 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiToolsRouteImport } from './routes/api/tools'
 import { Route as ApiPromptsRouteImport } from './routes/api/prompts'
 import { Route as ApiJobsRouteImport } from './routes/api/jobs'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppToolsRouteImport } from './routes/_app/tools'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
@@ -91,6 +92,11 @@ const ApiPromptsRoute = ApiPromptsRouteImport.update({
 const ApiJobsRoute = ApiJobsRouteImport.update({
   id: '/api/jobs',
   path: '/api/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppToolsRoute = AppToolsRouteImport.update({
@@ -321,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
   '/tools': typeof AppToolsRoute
+  '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
@@ -370,6 +377,7 @@ export interface FileRoutesByTo {
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
   '/tools': typeof AppToolsRoute
+  '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
@@ -422,6 +430,7 @@ export interface FileRoutesById {
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/tools': typeof AppToolsRoute
+  '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
@@ -475,6 +484,7 @@ export interface FileRouteTypes {
     | '/prompts'
     | '/settings'
     | '/tools'
+    | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
@@ -524,6 +534,7 @@ export interface FileRouteTypes {
     | '/prompts'
     | '/settings'
     | '/tools'
+    | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
@@ -575,6 +586,7 @@ export interface FileRouteTypes {
     | '/_app/prompts'
     | '/_app/settings'
     | '/_app/tools'
+    | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
@@ -617,6 +629,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiChatRoute: typeof ApiChatRoute
   ApiJobsRoute: typeof ApiJobsRouteWithChildren
   ApiPromptsRoute: typeof ApiPromptsRouteWithChildren
   ApiToolsRoute: typeof ApiToolsRouteWithChildren
@@ -691,6 +704,13 @@ declare module '@tanstack/react-router' {
       path: '/api/jobs'
       fullPath: '/api/jobs'
       preLoaderRoute: typeof ApiJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/tools': {
@@ -1126,6 +1146,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiChatRoute: ApiChatRoute,
   ApiJobsRoute: ApiJobsRouteWithChildren,
   ApiPromptsRoute: ApiPromptsRouteWithChildren,
   ApiToolsRoute: ApiToolsRouteWithChildren,
