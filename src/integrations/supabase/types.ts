@@ -62,6 +62,66 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_messages: {
+        Row: {
+          ai_analysis: string | null
+          ai_summary: string | null
+          created_at: string
+          extracted_data: Json | null
+          from_name: string | null
+          from_number: string
+          id: string
+          media_filename: string | null
+          media_id: string | null
+          media_mime_type: string | null
+          media_size: number | null
+          media_url: string | null
+          message_type: string
+          processed_at: string | null
+          status: string
+          text_content: string | null
+          wa_message_id: string | null
+        }
+        Insert: {
+          ai_analysis?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          extracted_data?: Json | null
+          from_name?: string | null
+          from_number: string
+          id?: string
+          media_filename?: string | null
+          media_id?: string | null
+          media_mime_type?: string | null
+          media_size?: number | null
+          media_url?: string | null
+          message_type?: string
+          processed_at?: string | null
+          status?: string
+          text_content?: string | null
+          wa_message_id?: string | null
+        }
+        Update: {
+          ai_analysis?: string | null
+          ai_summary?: string | null
+          created_at?: string
+          extracted_data?: Json | null
+          from_name?: string | null
+          from_number?: string
+          id?: string
+          media_filename?: string | null
+          media_id?: string | null
+          media_mime_type?: string | null
+          media_size?: number | null
+          media_url?: string | null
+          message_type?: string
+          processed_at?: string | null
+          status?: string
+          text_content?: string | null
+          wa_message_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
