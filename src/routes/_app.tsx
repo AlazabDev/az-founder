@@ -20,6 +20,8 @@ import {
   Settings,
   LogOut,
   ShieldCheck,
+  Cloud,
+  Cpu,
 } from "lucide-react";
 
 import { isAuthenticated, clearSession, getUser, hydrateSession } from "@/lib/auth";
@@ -45,10 +47,12 @@ interface NavItem {
 
 const NAV: NavItem[] = [
   { to: "/", label: "لوحة التحكم", icon: LayoutDashboard, exact: true },
+  { to: "/chat", label: "المحادثة الذكية", icon: MessagesSquare },
+  { to: "/ai-gateway", label: "AI Gateway", icon: Cpu },
+  { to: "/storage", label: "المخازن السحابية", icon: Cloud },
   { to: "/integrations", label: "الربط والمعرفات", icon: PlugZap },
   { to: "/data", label: "فحص وتنظيم البيانات", icon: FolderSearch },
   { to: "/gdrive", label: "Google Drive", icon: HardDrive },
-  { to: "/chat", label: "المحادثة الذكية", icon: MessagesSquare },
   { to: "/knowledge", label: "قاعدة المعرفة", icon: Library },
   { to: "/prompts", label: "استوديو البرومبت", icon: Sparkles },
   { to: "/tools", label: "أدوات الذكاء الاصطناعي", icon: Boxes },

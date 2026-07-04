@@ -1,169 +1,246 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Bot, Copy, Loader2, RefreshCw, Send, Trash2, User } from "lucide-react";
+import { Bot, Copy, Loader2, Plus, Send, Trash2, User } from "lucide-react";
 
 import { PageHeader } from "@/components/console/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { api, ApiError } from "@/lib/api";
-import { BRANDS, DEFAULT_BRAND } from "@/lib/config";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { getToken } from "@/lib/auth";
+import {
+  listConversations,
+  getConversation,
+  deleteConversation,
+} from "@/lib/conversations.functions";
+import { listEndpoints } from "@/lib/endpoints.functions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/_app/chat")({
   component: ChatPage,
 });
 
-interface ChatRequest {
-  message: string;
-  conversationId: string | null;
-  model: string;
-  brand: string;
-  systemPromptId: string | null;
-  knowledgeSourceIds: string[];
-  language: "ar" | "en";
-}
-
-interface ChatResponse {
-  answer: string;
-  conversationId: string;
-  sources?: Array<{ title: string; url: string; score: number }>;
-  usage?: { inputTokens: number; outputTokens: number; totalTokens: number };
-}
-
-interface Message {
+interface Msg {
   role: "user" | "assistant";
   content: string;
-  sources?: ChatResponse["sources"];
-  usage?: ChatResponse["usage"];
 }
 
 function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const qc = useQueryClient();
+  const [convId, setConvId] = useState<string | null>(null);
   const [input, setInput] = useState("");
-  const [brand, setBrand] = useState(DEFAULT_BRAND);
-  const [model, setModel] = useState("gpt-4o-mini");
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [streaming, setStreaming] = useState(false);
+  const [streamText, setStreamText] = useState("");
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [endpointId, setEndpointId] = useState<string | "auto">("auto");
   const endRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
-  const sendMutation = useMutation({
-    mutationFn: (req: ChatRequest) =>
-      api<ChatResponse>("/api/ai/chat", { method: "POST", body: req }),
-    onSuccess: (res) => {
-      setConversationId(res.conversationId);
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          content: res.answer,
-          sources: res.sources,
-          usage: res.usage,
-        },
-      ]);
-      setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+  const fetchList = useServerFn(listConversations);
+  const fetchOne = useServerFn(getConversation);
+  const removeConv = useServerFn(deleteConversation);
+  const fetchEndpoints = useServerFn(listEndpoints);
+
+  const convs = useQuery({ queryKey: ["conversations"], queryFn: fetchList });
+  const eps = useQuery({ queryKey: ["endpoints-chat"], queryFn: fetchEndpoints });
+
+  useEffect(() => {
+    if (!convId) {
+      setMessages([]);
+      return;
+    }
+    fetchOne({ data: { id: convId } }).then((r) => {
+      setMessages(
+        (r.messages ?? []).map((m) => ({
+          role: m.role === "assistant" ? "assistant" : "user",
+          content: m.content,
+        })),
+      );
+    });
+  }, [convId, fetchOne]);
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, streamText]);
+
+  const del = useMutation({
+    mutationFn: (id: string) => removeConv({ data: { id } }),
+    onSuccess: () => {
+      setConvId(null);
+      qc.invalidateQueries({ queryKey: ["conversations"] });
     },
-    onError: (e) => toast.error(e instanceof ApiError ? e.message : "فشل الإرسال"),
   });
 
-  function send() {
+  async function send() {
     const text = input.trim();
-    if (!text || sendMutation.isPending) return;
-    setMessages((m) => [...m, { role: "user", content: text }]);
+    if (!text || streaming) return;
     setInput("");
-    sendMutation.mutate({
-      message: text,
-      conversationId,
-      model,
-      brand,
-      systemPromptId: null,
-      knowledgeSourceIds: [],
-      language: "ar",
-    });
-  }
+    setMessages((m) => [...m, { role: "user", content: text }]);
+    setStreamText("");
+    setStreaming(true);
 
-  function reset() {
-    setMessages([]);
-    setConversationId(null);
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    try {
+      const token = getToken();
+      const r = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          message: text,
+          conversationId: convId,
+          endpointId: endpointId === "auto" ? null : endpointId,
+        }),
+        signal: controller.signal,
+      });
+
+      if (!r.ok) {
+        const err = await r.text();
+        toast.error(err || `فشل الإرسال (${r.status})`);
+        setStreaming(false);
+        return;
+      }
+
+      const reader = r.body!.getReader();
+      const dec = new TextDecoder();
+      let buf = "";
+      let acc = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const lines = buf.split("\n");
+        buf = lines.pop() ?? "";
+        for (const line of lines) {
+          const t = line.trim();
+          if (!t.startsWith("data:")) continue;
+          const payload = t.slice(5).trim();
+          if (payload === "[DONE]") continue;
+          try {
+            const j = JSON.parse(payload) as {
+              delta?: string;
+              done?: boolean;
+              conversationId?: string;
+              error?: string;
+            };
+            if (j.error) toast.error(j.error);
+            if (j.delta) {
+              acc += j.delta;
+              setStreamText(acc);
+            }
+            if (j.done && j.conversationId) {
+              setConvId(j.conversationId);
+              qc.invalidateQueries({ queryKey: ["conversations"] });
+            }
+          } catch {
+            // ignore
+          }
+        }
+      }
+
+      setMessages((m) => [...m, { role: "assistant", content: acc }]);
+      setStreamText("");
+    } catch (e) {
+      if ((e as Error).name !== "AbortError") {
+        toast.error(e instanceof Error ? e.message : "خطأ");
+      }
+    } finally {
+      setStreaming(false);
+      abortRef.current = null;
+    }
   }
 
   return (
     <div>
       <PageHeader
-        title="مساحة المحادثة الذكية"
-        description="تحدّث مع البيانات بعد فهرستها. يستخدم الباك اند Azure OpenAI و Azure AI Search لاسترجاع السياق."
+        title="المحادثة الذكية"
+        description="Streaming عبر AI Gateway مع Azure OpenAI + APIM + Content Safety."
         actions={
-          <Button variant="outline" size="sm" onClick={reset}>
-            <Trash2 className="ml-2 h-4 w-4" /> محادثة جديدة
+          <Button variant="outline" size="sm" onClick={() => setConvId(null)}>
+            <Plus className="ml-2 h-4 w-4" /> محادثة جديدة
           </Button>
         }
       />
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+      <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
+        <aside className="rounded-lg border bg-card p-3">
+          <div className="mb-2 text-xs font-medium text-muted-foreground">المحادثات</div>
+          <ScrollArea className="h-[60vh]">
+            <div className="space-y-1">
+              {(convs.data ?? []).map((c) => (
+                <div
+                  key={c.id}
+                  className={`group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent ${
+                    convId === c.id ? "bg-accent" : ""
+                  }`}
+                >
+                  <button
+                    className="flex-1 truncate text-right"
+                    onClick={() => setConvId(c.id)}
+                  >
+                    {c.title}
+                  </button>
+                  <button
+                    className="opacity-0 group-hover:opacity-100"
+                    onClick={() => del.mutate(c.id)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                  </button>
+                </div>
+              ))}
+              {convs.data?.length === 0 && (
+                <div className="text-xs text-muted-foreground">لا توجد محادثات بعد.</div>
+              )}
+            </div>
+          </ScrollArea>
+        </aside>
+
         <div className="flex h-[70vh] flex-col rounded-lg border bg-card">
+          <div className="flex items-center justify-between border-b p-3">
+            <Select value={endpointId} onValueChange={(v) => setEndpointId(v)}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="اختر endpoint" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="auto">تلقائي (الافتراضي)</SelectItem>
+                {(eps.data ?? []).map((e) => (
+                  <SelectItem key={e.id} value={e.id}>
+                    {e.name} — {e.model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex-1 space-y-4 overflow-y-auto p-5">
-            {messages.length === 0 ? (
+            {messages.length === 0 && !streamText ? (
               <div className="flex h-full items-center justify-center text-center text-sm text-muted-foreground">
-                ابدأ بإرسال رسالة للتحدث مع البيانات المفهرسة.
+                ابدأ محادثة جديدة…
               </div>
             ) : (
-              messages.map((m, i) => (
-                <div key={i} className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-                  <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
-                      m.role === "user" ? "bg-primary/15 text-primary" : "bg-muted"
-                    }`}
-                  >
-                    {m.role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="rounded-lg border bg-background p-3 text-sm whitespace-pre-wrap">
-                      {m.content}
-                    </div>
-                    {m.sources && m.sources.length > 0 && (
-                      <div className="mt-2 space-y-1">
-                        <div className="text-xs font-medium text-muted-foreground">المصادر</div>
-                        <ul className="space-y-1 text-xs">
-                          {m.sources.map((s, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                              <a
-                                href={s.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="truncate text-primary hover:underline"
-                              >
-                                {s.title}
-                              </a>
-                              <span className="num text-muted-foreground">
-                                {(s.score * 100).toFixed(0)}%
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {m.role === "assistant" && (
-                      <div className="mt-2 flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => {
-                            navigator.clipboard.writeText(m.content);
-                            toast.success("تم النسخ");
-                          }}
-                        >
-                          <Copy className="ml-1 h-3.5 w-3.5" /> نسخ
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))
+              <>
+                {messages.map((m, i) => (
+                  <MessageBubble key={i} role={m.role} content={m.content} />
+                ))}
+                {streamText && <MessageBubble role="assistant" content={streamText} streaming />}
+              </>
             )}
-            {sendMutation.isPending && (
+            {streaming && !streamText && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> يُحضِّر الإجابة…
+                <Loader2 className="h-4 w-4 animate-spin" /> جاري التفكير…
               </div>
             )}
             <div ref={endRef} />
@@ -180,48 +257,57 @@ function ChatPage() {
                     send();
                   }
                 }}
-                placeholder="اكتب سؤالك… (Ctrl/Cmd + Enter للإرسال)"
+                placeholder="اكتب رسالتك… (Ctrl/Cmd + Enter للإرسال)"
                 rows={2}
                 className="resize-none"
               />
-              <Button onClick={send} disabled={sendMutation.isPending} className="shrink-0">
+              <Button onClick={send} disabled={streaming} className="shrink-0">
                 <Send className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
 
-        <aside className="space-y-4 rounded-lg border bg-card p-4">
-          <div>
-            <Label className="text-xs">العلامة التجارية</Label>
-            <Select value={brand} onValueChange={setBrand}>
-              <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                {BRANDS.map((b) => (
-                  <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label className="text-xs">النموذج</Label>
-            <Select value={model} onValueChange={setModel}>
-              <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="gpt-4o-mini">gpt-4o-mini</SelectItem>
-                <SelectItem value="gpt-4o">gpt-4o</SelectItem>
-                <SelectItem value="gpt-4.1">gpt-4.1</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="rounded-md border bg-background p-3 text-xs text-muted-foreground">
-            <div className="mb-1 font-medium text-foreground">معرّف المحادثة</div>
-            <div className="num truncate">{conversationId ?? "—"}</div>
-          </div>
-          <Button variant="outline" size="sm" className="w-full" onClick={reset}>
-            <RefreshCw className="ml-2 h-4 w-4" /> إعادة ضبط
+function MessageBubble({
+  role,
+  content,
+  streaming,
+}: {
+  role: "user" | "assistant";
+  content: string;
+  streaming?: boolean;
+}) {
+  return (
+    <div className={`flex gap-3 ${role === "user" ? "flex-row-reverse" : ""}`}>
+      <div
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
+          role === "user" ? "bg-primary/15 text-primary" : "bg-muted"
+        }`}
+      >
+        {role === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="whitespace-pre-wrap rounded-lg border bg-background p-3 text-sm">
+          {content}
+          {streaming && <span className="ml-1 inline-block h-3 w-1.5 animate-pulse bg-primary" />}
+        </div>
+        {role === "assistant" && !streaming && (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="mt-1 h-7"
+            onClick={() => {
+              navigator.clipboard.writeText(content);
+              toast.success("نُسخ");
+            }}
+          >
+            <Copy className="ml-1 h-3 w-3" /> نسخ
           </Button>
-        </aside>
+        )}
       </div>
     </div>
   );

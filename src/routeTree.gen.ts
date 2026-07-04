@@ -16,7 +16,9 @@ import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as ApiToolsRouteImport } from './routes/api/tools'
 import { Route as ApiPromptsRouteImport } from './routes/api/prompts'
 import { Route as ApiJobsRouteImport } from './routes/api/jobs'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AppToolsRouteImport } from './routes/_app/tools'
+import { Route as AppStorageRouteImport } from './routes/_app/storage'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
@@ -26,6 +28,7 @@ import { Route as AppGdriveRouteImport } from './routes/_app/gdrive'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
+import { Route as AppAiGatewayIndexRouteImport } from './routes/_app/ai-gateway.index'
 import { Route as ApiPromptsIdRouteImport } from './routes/api/prompts/$id'
 import { Route as ApiKnowledgeUploadRouteImport } from './routes/api/knowledge/upload'
 import { Route as ApiKnowledgeSourcesRouteImport } from './routes/api/knowledge/sources'
@@ -44,6 +47,9 @@ import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAnalyticsOverviewRouteImport } from './routes/api/analytics/overview'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
+import { Route as AppAiGatewayPoliciesRouteImport } from './routes/_app/ai-gateway.policies'
+import { Route as AppAiGatewayLogsRouteImport } from './routes/_app/ai-gateway.logs'
+import { Route as AppAiGatewayEndpointsRouteImport } from './routes/_app/ai-gateway.endpoints'
 import { Route as ApiToolsIdTestRouteImport } from './routes/api/tools/$id/test'
 import { Route as ApiPromptsIdTestRouteImport } from './routes/api/prompts/$id/test'
 import { Route as ApiKnowledgeSourcesIdRouteImport } from './routes/api/knowledge/sources/$id'
@@ -93,9 +99,19 @@ const ApiJobsRoute = ApiJobsRouteImport.update({
   path: '/api/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppToolsRoute = AppToolsRouteImport.update({
   id: '/tools',
   path: '/tools',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStorageRoute = AppStorageRouteImport.update({
+  id: '/storage',
+  path: '/storage',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -141,6 +157,11 @@ const AppChatRoute = AppChatRouteImport.update({
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiGatewayIndexRoute = AppAiGatewayIndexRouteImport.update({
+  id: '/ai-gateway/',
+  path: '/ai-gateway/',
   getParentRoute: () => AppRoute,
 } as any)
 const ApiPromptsIdRoute = ApiPromptsIdRouteImport.update({
@@ -233,6 +254,21 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   path: '/api/ai/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppAiGatewayPoliciesRoute = AppAiGatewayPoliciesRouteImport.update({
+  id: '/ai-gateway/policies',
+  path: '/ai-gateway/policies',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiGatewayLogsRoute = AppAiGatewayLogsRouteImport.update({
+  id: '/ai-gateway/logs',
+  path: '/ai-gateway/logs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiGatewayEndpointsRoute = AppAiGatewayEndpointsRouteImport.update({
+  id: '/ai-gateway/endpoints',
+  path: '/ai-gateway/endpoints',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiToolsIdTestRoute = ApiToolsIdTestRouteImport.update({
   id: '/$id/test',
   path: '/$id/test',
@@ -320,10 +356,15 @@ export interface FileRoutesByFullPath {
   '/knowledge': typeof AppKnowledgeRoute
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
+  '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
+  '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
+  '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
+  '/ai-gateway/logs': typeof AppAiGatewayLogsRoute
+  '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -342,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
   '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
   '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/ai-gateway/': typeof AppAiGatewayIndexRoute
   '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
   '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
   '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
@@ -369,11 +411,16 @@ export interface FileRoutesByTo {
   '/knowledge': typeof AppKnowledgeRoute
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
+  '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
+  '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/': typeof AppIndexRoute
+  '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
+  '/ai-gateway/logs': typeof AppAiGatewayLogsRoute
+  '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -392,6 +439,7 @@ export interface FileRoutesByTo {
   '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
   '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
   '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/ai-gateway': typeof AppAiGatewayIndexRoute
   '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
   '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
   '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
@@ -421,11 +469,16 @@ export interface FileRoutesById {
   '/_app/knowledge': typeof AppKnowledgeRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/settings': typeof AppSettingsRoute
+  '/_app/storage': typeof AppStorageRoute
   '/_app/tools': typeof AppToolsRoute
+  '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/_app/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
+  '/_app/ai-gateway/logs': typeof AppAiGatewayLogsRoute
+  '/_app/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
@@ -444,6 +497,7 @@ export interface FileRoutesById {
   '/api/knowledge/sources': typeof ApiKnowledgeSourcesRouteWithChildren
   '/api/knowledge/upload': typeof ApiKnowledgeUploadRoute
   '/api/prompts/$id': typeof ApiPromptsIdRouteWithChildren
+  '/_app/ai-gateway/': typeof AppAiGatewayIndexRoute
   '/api/data/jobs/$id': typeof ApiDataJobsIdRouteWithChildren
   '/api/integrations/$id/secret': typeof ApiIntegrationsIdSecretRoute
   '/api/integrations/$id/test': typeof ApiIntegrationsIdTestRoute
@@ -474,10 +528,15 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/prompts'
     | '/settings'
+    | '/storage'
     | '/tools'
+    | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
+    | '/ai-gateway/endpoints'
+    | '/ai-gateway/logs'
+    | '/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -496,6 +555,7 @@ export interface FileRouteTypes {
     | '/api/knowledge/sources'
     | '/api/knowledge/upload'
     | '/api/prompts/$id'
+    | '/ai-gateway/'
     | '/api/data/jobs/$id'
     | '/api/integrations/$id/secret'
     | '/api/integrations/$id/test'
@@ -523,11 +583,16 @@ export interface FileRouteTypes {
     | '/knowledge'
     | '/prompts'
     | '/settings'
+    | '/storage'
     | '/tools'
+    | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
     | '/'
+    | '/ai-gateway/endpoints'
+    | '/ai-gateway/logs'
+    | '/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -546,6 +611,7 @@ export interface FileRouteTypes {
     | '/api/knowledge/sources'
     | '/api/knowledge/upload'
     | '/api/prompts/$id'
+    | '/ai-gateway'
     | '/api/data/jobs/$id'
     | '/api/integrations/$id/secret'
     | '/api/integrations/$id/test'
@@ -574,11 +640,16 @@ export interface FileRouteTypes {
     | '/_app/knowledge'
     | '/_app/prompts'
     | '/_app/settings'
+    | '/_app/storage'
     | '/_app/tools'
+    | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
     | '/_app/'
+    | '/_app/ai-gateway/endpoints'
+    | '/_app/ai-gateway/logs'
+    | '/_app/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/auth/login'
@@ -597,6 +668,7 @@ export interface FileRouteTypes {
     | '/api/knowledge/sources'
     | '/api/knowledge/upload'
     | '/api/prompts/$id'
+    | '/_app/ai-gateway/'
     | '/api/data/jobs/$id'
     | '/api/integrations/$id/secret'
     | '/api/integrations/$id/test'
@@ -617,6 +689,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiChatRoute: typeof ApiChatRoute
   ApiJobsRoute: typeof ApiJobsRouteWithChildren
   ApiPromptsRoute: typeof ApiPromptsRouteWithChildren
   ApiToolsRoute: typeof ApiToolsRouteWithChildren
@@ -693,11 +766,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/tools': {
       id: '/_app/tools'
       path: '/tools'
       fullPath: '/tools'
       preLoaderRoute: typeof AppToolsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/storage': {
+      id: '/_app/storage'
+      path: '/storage'
+      fullPath: '/storage'
+      preLoaderRoute: typeof AppStorageRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/settings': {
@@ -761,6 +848,13 @@ declare module '@tanstack/react-router' {
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AppAnalyticsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ai-gateway/': {
+      id: '/_app/ai-gateway/'
+      path: '/ai-gateway'
+      fullPath: '/ai-gateway/'
+      preLoaderRoute: typeof AppAiGatewayIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/api/prompts/$id': {
@@ -889,6 +983,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/ai-gateway/policies': {
+      id: '/_app/ai-gateway/policies'
+      path: '/ai-gateway/policies'
+      fullPath: '/ai-gateway/policies'
+      preLoaderRoute: typeof AppAiGatewayPoliciesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ai-gateway/logs': {
+      id: '/_app/ai-gateway/logs'
+      path: '/ai-gateway/logs'
+      fullPath: '/ai-gateway/logs'
+      preLoaderRoute: typeof AppAiGatewayLogsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/ai-gateway/endpoints': {
+      id: '/_app/ai-gateway/endpoints'
+      path: '/ai-gateway/endpoints'
+      fullPath: '/ai-gateway/endpoints'
+      preLoaderRoute: typeof AppAiGatewayEndpointsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/tools/$id/test': {
       id: '/api/tools/$id/test'
       path: '/$id/test'
@@ -1000,8 +1115,13 @@ interface AppRouteChildren {
   AppKnowledgeRoute: typeof AppKnowledgeRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppSettingsRoute: typeof AppSettingsRoute
+  AppStorageRoute: typeof AppStorageRoute
   AppToolsRoute: typeof AppToolsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAiGatewayEndpointsRoute: typeof AppAiGatewayEndpointsRoute
+  AppAiGatewayLogsRoute: typeof AppAiGatewayLogsRoute
+  AppAiGatewayPoliciesRoute: typeof AppAiGatewayPoliciesRoute
+  AppAiGatewayIndexRoute: typeof AppAiGatewayIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -1014,8 +1134,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppKnowledgeRoute: AppKnowledgeRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppSettingsRoute: AppSettingsRoute,
+  AppStorageRoute: AppStorageRoute,
   AppToolsRoute: AppToolsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAiGatewayEndpointsRoute: AppAiGatewayEndpointsRoute,
+  AppAiGatewayLogsRoute: AppAiGatewayLogsRoute,
+  AppAiGatewayPoliciesRoute: AppAiGatewayPoliciesRoute,
+  AppAiGatewayIndexRoute: AppAiGatewayIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -1126,6 +1251,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiChatRoute: ApiChatRoute,
   ApiJobsRoute: ApiJobsRouteWithChildren,
   ApiPromptsRoute: ApiPromptsRouteWithChildren,
   ApiToolsRoute: ApiToolsRouteWithChildren,
