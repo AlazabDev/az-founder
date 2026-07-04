@@ -31,21 +31,22 @@ export const upsertPolicy = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => policySchema.parse(input))
   .handler(async ({ data, context }) => {
     await requireAdmin(context.supabase, context.userId);
+    const row = { ...data, config: data.config as never };
     if (data.id) {
       const { error } = await context.supabase
         .from("apim_policies")
-        .update(data)
+        .update(row)
         .eq("id", data.id);
       if (error) throw error;
       return { id: data.id };
     }
-    const { data: row, error } = await context.supabase
+    const { data: inserted, error } = await context.supabase
       .from("apim_policies")
-      .insert(data)
+      .insert(row)
       .select("id")
       .single();
     if (error) throw error;
-    return { id: row.id };
+    return { id: inserted.id };
   });
 
 export const deletePolicy = createServerFn({ method: "POST" })
