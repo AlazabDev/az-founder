@@ -21,8 +21,9 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  listEndpoints, upsertEndpoint, deleteEndpoint, testEndpoint,
+  listEndpoints, upsertEndpoint, deleteEndpoint, testEndpoint, testAllEndpoints,
 } from "@/lib/endpoints.functions";
 
 export const Route = createFileRoute("/_app/ai-gateway/endpoints")({
