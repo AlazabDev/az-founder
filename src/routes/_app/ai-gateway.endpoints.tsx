@@ -206,10 +206,11 @@ function EndpointsPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {list.data?.length === 0 && (
               <tr>
-                <td colSpan={8} className="p-8 text-center text-muted-foreground">
+                <td colSpan={10} className="p-8 text-center text-muted-foreground">
                   لا يوجد endpoints. أضف واحداً للبدء.
                 </td>
               </tr>
