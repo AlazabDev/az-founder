@@ -26,13 +26,15 @@ const endpointSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1).max(100),
   provider: z.enum(["azure_openai", "openai", "lovable", "apim"]),
-  base_url: z.string().url().nullable().optional(),
+  base_url: z.string().url().nullable().optional().or(z.literal("")),
   deployment_name: z.string().max(100).nullable().optional(),
   model: z.string().min(1).max(100),
   api_version: z.string().max(50).nullable().optional(),
   use_apim: z.boolean().default(false),
   is_default: z.boolean().default(false),
   enabled: z.boolean().default(true),
+  api_key: z.string().nullable().optional(),
+  extra_headers: z.record(z.string(), z.string()).nullable().optional(),
 });
 
 export const upsertEndpoint = createServerFn({ method: "POST" })
