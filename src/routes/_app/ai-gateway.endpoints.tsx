@@ -130,12 +130,28 @@ function EndpointsPage() {
               <th className="p-3">النشر</th>
               <th className="p-3">APIM</th>
               <th className="p-3">افتراضي</th>
+              <th className="p-3">مفتاح</th>
+              <th className="p-3">الاتصال</th>
               <th className="p-3">الحالة</th>
               <th className="p-3"></th>
             </tr>
           </thead>
           <tbody>
-            {(list.data ?? []).map((e) => (
+            {(list.data ?? []).map((e) => {
+              const row = e as Endpoint & {
+                api_key?: string | null;
+                last_status?: string | null;
+                last_latency_ms?: number | null;
+                last_checked_at?: string | null;
+              };
+              const status = row.last_status;
+              const dot =
+                status === "ok"
+                  ? "bg-green-500"
+                  : status === "error"
+                  ? "bg-red-500"
+                  : "bg-muted-foreground/40";
+              return (
               <tr key={e.id} className="border-b last:border-0">
                 <td className="p-3 font-medium">{e.name}</td>
                 <td className="p-3">{e.provider}</td>
@@ -143,6 +159,19 @@ function EndpointsPage() {
                 <td className="p-3 font-mono text-xs">{e.deployment_name ?? "-"}</td>
                 <td className="p-3">{e.use_apim ? "✓" : "-"}</td>
                 <td className="p-3">{e.is_default ? <Badge>افتراضي</Badge> : "-"}</td>
+                <td className="p-3 text-xs">{row.api_key ? "•••••" : <span className="text-muted-foreground">env</span>}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+                    <span className="text-muted-foreground">
+                      {status === "ok"
+                        ? `${row.last_latency_ms ?? "?"}ms`
+                        : status === "error"
+                        ? "فشل"
+                        : "—"}
+                    </span>
+                  </div>
+                </td>
                 <td className="p-3">
                   {e.enabled ? (
                     <Badge variant="outline" className="border-green-500/40 text-green-600">
