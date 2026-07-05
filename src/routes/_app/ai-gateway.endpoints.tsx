@@ -38,10 +38,12 @@ function EndpointsPage() {
   const save = useServerFn(upsertEndpoint);
   const remove = useServerFn(deleteEndpoint);
   const test = useServerFn(testEndpoint);
+  const testAll = useServerFn(testAllEndpoints);
 
   const list = useQuery({ queryKey: ["endpoints"], queryFn: fetchList });
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Endpoint> | null>(null);
+  const [showKey, setShowKey] = useState(false);
 
   const saveMut = useMutation({
     mutationFn: (v: Partial<Endpoint>) => save({ data: v as never }),
@@ -65,8 +67,19 @@ function EndpointsPage() {
     mutationFn: (id: string) => test({ data: { id } }),
     onSuccess: (r) => {
       const res = r as { ok: boolean; latency_ms?: number; status?: number; error?: string };
+      qc.invalidateQueries({ queryKey: ["endpoints"] });
       if (res.ok) toast.success(`متصل ✓ (${res.latency_ms}ms)`);
       else toast.error(`فشل: ${res.error ?? res.status}`);
+    },
+  });
+
+  const testAllMut = useMutation({
+    mutationFn: () => testAll({}),
+    onSuccess: (r) => {
+      qc.invalidateQueries({ queryKey: ["endpoints"] });
+      const arr = r as Array<{ ok: boolean }>;
+      const ok = arr.filter((x) => x.ok).length;
+      toast.success(`${ok}/${arr.length} endpoints متصلة`);
     },
   });
 
@@ -81,7 +94,10 @@ function EndpointsPage() {
       use_apim: false,
       is_default: false,
       enabled: true,
+      api_key: "",
+      extra_headers: {},
     });
+    setShowKey(false);
     setOpen(true);
   }
 
@@ -91,11 +107,18 @@ function EndpointsPage() {
         title="AI Endpoints"
         description="أضف واختبر نقاط خدمة الذكاء الاصطناعي (Azure OpenAI / OpenAI / APIM)."
         actions={
-          <Button onClick={openNew}>
-            <Plus className="ml-2 h-4 w-4" /> جديد
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => testAllMut.mutate()} disabled={testAllMut.isPending}>
+              <PlayCircle className="ml-2 h-4 w-4" />
+              اختبار الكل
+            </Button>
+            <Button onClick={openNew}>
+              <Plus className="ml-2 h-4 w-4" /> جديد
+            </Button>
+          </div>
         }
       />
+
 
       <div className="rounded-lg border bg-card">
         <table className="w-full text-sm">
