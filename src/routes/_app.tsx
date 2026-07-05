@@ -22,6 +22,7 @@ import {
   ShieldCheck,
   Cloud,
   Cpu,
+  GraduationCap,
 } from "lucide-react";
 
 import { isAuthenticated, clearSession, getUser, hydrateSession } from "@/lib/auth";
