@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_agents: {
+        Row: {
+          config: Json
+          created_at: string
+          created_by: string | null
+          display_name: string | null
+          enabled: boolean
+          endpoint_id: string | null
+          id: string
+          kind: Database["public"]["Enums"]["agent_kind"]
+          model: string | null
+          name: string
+          system_prompt: string | null
+          updated_at: string
+          version: string | null
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          display_name?: string | null
+          enabled?: boolean
+          endpoint_id?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["agent_kind"]
+          model?: string | null
+          name: string
+          system_prompt?: string | null
+          updated_at?: string
+          version?: string | null
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          created_by?: string | null
+          display_name?: string | null
+          enabled?: boolean
+          endpoint_id?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["agent_kind"]
+          model?: string | null
+          name?: string
+          system_prompt?: string | null
+          updated_at?: string
+          version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_agents_endpoint_id_fkey"
+            columns: ["endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "ai_endpoints"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_conversations: {
         Row: {
           created_at: string
@@ -470,6 +526,7 @@ export type Database = {
       }
     }
     Enums: {
+      agent_kind: "copilot" | "core" | "prod" | "maint" | "finance" | "custom"
       ai_provider: "azure_openai" | "openai" | "lovable" | "apim"
       app_role: "admin" | "user"
       message_role: "system" | "user" | "assistant" | "tool"
@@ -608,6 +665,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      agent_kind: ["copilot", "core", "prod", "maint", "finance", "custom"],
       ai_provider: ["azure_openai", "openai", "lovable", "apim"],
       app_role: ["admin", "user"],
       message_role: ["system", "user", "assistant", "tool"],

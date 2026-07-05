@@ -42,6 +42,9 @@ function DashboardPage() {
             <Link to="/ai-gateway/endpoints">
               <Button size="sm" variant="outline">Endpoints</Button>
             </Link>
+            <Link to="/ai-gateway/agents">
+              <Button size="sm" variant="outline">Agents</Button>
+            </Link>
             <Link to="/ai-gateway/policies">
               <Button size="sm" variant="outline">Policies</Button>
             </Link>
