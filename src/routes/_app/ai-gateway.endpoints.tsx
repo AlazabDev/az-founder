@@ -276,6 +276,43 @@ function EndpointsPage() {
                   placeholder="2024-10-21"
                 />
               </Field>
+              <Field label="API Key (اترك فارغاً لاستخدام AZURE_OPENAI_API_KEY)">
+                <div className="flex gap-2">
+                  <Input
+                    type={showKey ? "text" : "password"}
+                    value={(editing as { api_key?: string | null }).api_key ?? ""}
+                    onChange={(e) => setEditing({ ...editing, api_key: e.target.value } as never)}
+                    placeholder="••••••••"
+                    autoComplete="off"
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={() => setShowKey((s) => !s)}>
+                    {showKey ? "إخفاء" : "إظهار"}
+                  </Button>
+                </div>
+              </Field>
+              <Field label='Extra Headers (JSON، مثل: {"x-custom":"value"})'>
+                <Textarea
+                  rows={2}
+                  value={(() => {
+                    const h = (editing as { extra_headers?: Record<string, string> | null }).extra_headers;
+                    return h && Object.keys(h).length ? JSON.stringify(h, null, 2) : "";
+                  })()}
+                  onChange={(e) => {
+                    const raw = e.target.value.trim();
+                    if (!raw) {
+                      setEditing({ ...editing, extra_headers: {} } as never);
+                      return;
+                    }
+                    try {
+                      const parsed = JSON.parse(raw) as Record<string, string>;
+                      setEditing({ ...editing, extra_headers: parsed } as never);
+                    } catch {
+                      /* keep as-is until valid */
+                    }
+                  }}
+                  placeholder='{"x-my-header":"value"}'
+                />
+              </Field>
               <div className="grid grid-cols-3 gap-3">
                 <Toggle label="عبر APIM" value={!!editing.use_apim} onChange={(v) => setEditing({ ...editing, use_apim: v })} />
                 <Toggle label="افتراضي" value={!!editing.is_default} onChange={(v) => setEditing({ ...editing, is_default: v })} />
