@@ -20,6 +20,8 @@ export interface Endpoint {
   use_apim: boolean;
   enabled: boolean;
   is_default: boolean;
+  api_key?: string | null;
+  extra_headers?: Record<string, string> | null;
 }
 
 export interface ChatMsg {
