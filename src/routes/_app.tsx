@@ -49,6 +49,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: "/", label: "لوحة التحكم", icon: LayoutDashboard, exact: true },
   { to: "/chat", label: "المحادثة الذكية", icon: MessagesSquare },
+  { to: "/training", label: "بيئة التدريب", icon: GraduationCap },
   { to: "/ai-gateway", label: "AI Gateway", icon: Cpu },
   { to: "/storage", label: "المخازن السحابية", icon: Cloud },
   { to: "/integrations", label: "الربط والمعرفات", icon: PlugZap },
