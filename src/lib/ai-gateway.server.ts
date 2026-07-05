@@ -328,8 +328,12 @@ function buildAuthHeaders(ep: Endpoint): Record<string, string> {
   if (ep.use_apim && process.env.AZURE_APIM_SUBSCRIPTION_KEY) {
     headers["Ocp-Apim-Subscription-Key"] = process.env.AZURE_APIM_SUBSCRIPTION_KEY;
   }
-  if (process.env.AZURE_OPENAI_API_KEY) {
-    headers["api-key"] = process.env.AZURE_OPENAI_API_KEY;
+  const key = ep.api_key ?? process.env.AZURE_OPENAI_API_KEY;
+  if (key) headers["api-key"] = key;
+  if (ep.extra_headers && typeof ep.extra_headers === "object") {
+    for (const [k, v] of Object.entries(ep.extra_headers)) {
+      if (typeof v === "string") headers[k] = v;
+    }
   }
   return headers;
 }
