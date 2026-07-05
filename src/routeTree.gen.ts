@@ -17,6 +17,7 @@ import { Route as ApiToolsRouteImport } from './routes/api/tools'
 import { Route as ApiPromptsRouteImport } from './routes/api/prompts'
 import { Route as ApiJobsRouteImport } from './routes/api/jobs'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AppTrainingRouteImport } from './routes/_app/training'
 import { Route as AppToolsRouteImport } from './routes/_app/tools'
 import { Route as AppStorageRouteImport } from './routes/_app/storage'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
@@ -104,6 +105,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AppTrainingRoute = AppTrainingRouteImport.update({
+  id: '/training',
+  path: '/training',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppToolsRoute = AppToolsRouteImport.update({
   id: '/tools',
@@ -364,6 +370,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AppSettingsRoute
   '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
+  '/training': typeof AppTrainingRoute
   '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
@@ -420,6 +427,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AppSettingsRoute
   '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
+  '/training': typeof AppTrainingRoute
   '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
@@ -479,6 +487,7 @@ export interface FileRoutesById {
   '/_app/settings': typeof AppSettingsRoute
   '/_app/storage': typeof AppStorageRoute
   '/_app/tools': typeof AppToolsRoute
+  '/_app/training': typeof AppTrainingRoute
   '/api/chat': typeof ApiChatRoute
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
@@ -539,6 +548,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/storage'
     | '/tools'
+    | '/training'
     | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
@@ -595,6 +605,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/storage'
     | '/tools'
+    | '/training'
     | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
@@ -653,6 +664,7 @@ export interface FileRouteTypes {
     | '/_app/settings'
     | '/_app/storage'
     | '/_app/tools'
+    | '/_app/training'
     | '/api/chat'
     | '/api/jobs'
     | '/api/prompts'
@@ -784,6 +796,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_app/training': {
+      id: '/_app/training'
+      path: '/training'
+      fullPath: '/training'
+      preLoaderRoute: typeof AppTrainingRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/tools': {
       id: '/_app/tools'
@@ -1136,6 +1155,7 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppStorageRoute: typeof AppStorageRoute
   AppToolsRoute: typeof AppToolsRoute
+  AppTrainingRoute: typeof AppTrainingRoute
   AppIndexRoute: typeof AppIndexRoute
   AppAiGatewayAgentsRoute: typeof AppAiGatewayAgentsRoute
   AppAiGatewayEndpointsRoute: typeof AppAiGatewayEndpointsRoute
@@ -1156,6 +1176,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppStorageRoute: AppStorageRoute,
   AppToolsRoute: AppToolsRoute,
+  AppTrainingRoute: AppTrainingRoute,
   AppIndexRoute: AppIndexRoute,
   AppAiGatewayAgentsRoute: AppAiGatewayAgentsRoute,
   AppAiGatewayEndpointsRoute: AppAiGatewayEndpointsRoute,

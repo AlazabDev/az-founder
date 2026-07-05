@@ -110,14 +110,19 @@ export type Database = {
       }
       ai_endpoints: {
         Row: {
+          api_key: string | null
           api_version: string | null
           base_url: string | null
           created_at: string
           created_by: string | null
           deployment_name: string | null
           enabled: boolean
+          extra_headers: Json
           id: string
           is_default: boolean
+          last_checked_at: string | null
+          last_latency_ms: number | null
+          last_status: string | null
           model: string
           name: string
           provider: Database["public"]["Enums"]["ai_provider"]
@@ -125,14 +130,19 @@ export type Database = {
           use_apim: boolean
         }
         Insert: {
+          api_key?: string | null
           api_version?: string | null
           base_url?: string | null
           created_at?: string
           created_by?: string | null
           deployment_name?: string | null
           enabled?: boolean
+          extra_headers?: Json
           id?: string
           is_default?: boolean
+          last_checked_at?: string | null
+          last_latency_ms?: number | null
+          last_status?: string | null
           model: string
           name: string
           provider: Database["public"]["Enums"]["ai_provider"]
@@ -140,14 +150,19 @@ export type Database = {
           use_apim?: boolean
         }
         Update: {
+          api_key?: string | null
           api_version?: string | null
           base_url?: string | null
           created_at?: string
           created_by?: string | null
           deployment_name?: string | null
           enabled?: boolean
+          extra_headers?: Json
           id?: string
           is_default?: boolean
+          last_checked_at?: string | null
+          last_latency_ms?: number | null
+          last_status?: string | null
           model?: string
           name?: string
           provider?: Database["public"]["Enums"]["ai_provider"]

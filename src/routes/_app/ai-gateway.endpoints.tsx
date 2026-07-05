@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, PlugZap } from "lucide-react";
+import { Plus, Pencil, Trash2, PlugZap, PlayCircle } from "lucide-react";
 
 import { PageHeader } from "@/components/console/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -21,8 +21,9 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  listEndpoints, upsertEndpoint, deleteEndpoint, testEndpoint,
+  listEndpoints, upsertEndpoint, deleteEndpoint, testEndpoint, testAllEndpoints,
 } from "@/lib/endpoints.functions";
 
 export const Route = createFileRoute("/_app/ai-gateway/endpoints")({
@@ -37,10 +38,12 @@ function EndpointsPage() {
   const save = useServerFn(upsertEndpoint);
   const remove = useServerFn(deleteEndpoint);
   const test = useServerFn(testEndpoint);
+  const testAll = useServerFn(testAllEndpoints);
 
   const list = useQuery({ queryKey: ["endpoints"], queryFn: fetchList });
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Endpoint> | null>(null);
+  const [showKey, setShowKey] = useState(false);
 
   const saveMut = useMutation({
     mutationFn: (v: Partial<Endpoint>) => save({ data: v as never }),
@@ -64,8 +67,19 @@ function EndpointsPage() {
     mutationFn: (id: string) => test({ data: { id } }),
     onSuccess: (r) => {
       const res = r as { ok: boolean; latency_ms?: number; status?: number; error?: string };
+      qc.invalidateQueries({ queryKey: ["endpoints"] });
       if (res.ok) toast.success(`متصل ✓ (${res.latency_ms}ms)`);
       else toast.error(`فشل: ${res.error ?? res.status}`);
+    },
+  });
+
+  const testAllMut = useMutation({
+    mutationFn: () => testAll({}),
+    onSuccess: (r) => {
+      qc.invalidateQueries({ queryKey: ["endpoints"] });
+      const arr = r as Array<{ ok: boolean }>;
+      const ok = arr.filter((x) => x.ok).length;
+      toast.success(`${ok}/${arr.length} endpoints متصلة`);
     },
   });
 
@@ -80,7 +94,10 @@ function EndpointsPage() {
       use_apim: false,
       is_default: false,
       enabled: true,
+      api_key: "",
+      extra_headers: {},
     });
+    setShowKey(false);
     setOpen(true);
   }
 
@@ -90,11 +107,18 @@ function EndpointsPage() {
         title="AI Endpoints"
         description="أضف واختبر نقاط خدمة الذكاء الاصطناعي (Azure OpenAI / OpenAI / APIM)."
         actions={
-          <Button onClick={openNew}>
-            <Plus className="ml-2 h-4 w-4" /> جديد
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => testAllMut.mutate()} disabled={testAllMut.isPending}>
+              <PlayCircle className="ml-2 h-4 w-4" />
+              اختبار الكل
+            </Button>
+            <Button onClick={openNew}>
+              <Plus className="ml-2 h-4 w-4" /> جديد
+            </Button>
+          </div>
         }
       />
+
 
       <div className="rounded-lg border bg-card">
         <table className="w-full text-sm">
@@ -106,12 +130,28 @@ function EndpointsPage() {
               <th className="p-3">النشر</th>
               <th className="p-3">APIM</th>
               <th className="p-3">افتراضي</th>
+              <th className="p-3">مفتاح</th>
+              <th className="p-3">الاتصال</th>
               <th className="p-3">الحالة</th>
               <th className="p-3"></th>
             </tr>
           </thead>
           <tbody>
-            {(list.data ?? []).map((e) => (
+            {(list.data ?? []).map((e) => {
+              const row = e as Endpoint & {
+                api_key?: string | null;
+                last_status?: string | null;
+                last_latency_ms?: number | null;
+                last_checked_at?: string | null;
+              };
+              const status = row.last_status;
+              const dot =
+                status === "ok"
+                  ? "bg-green-500"
+                  : status === "error"
+                  ? "bg-red-500"
+                  : "bg-muted-foreground/40";
+              return (
               <tr key={e.id} className="border-b last:border-0">
                 <td className="p-3 font-medium">{e.name}</td>
                 <td className="p-3">{e.provider}</td>
@@ -119,6 +159,19 @@ function EndpointsPage() {
                 <td className="p-3 font-mono text-xs">{e.deployment_name ?? "-"}</td>
                 <td className="p-3">{e.use_apim ? "✓" : "-"}</td>
                 <td className="p-3">{e.is_default ? <Badge>افتراضي</Badge> : "-"}</td>
+                <td className="p-3 text-xs">{row.api_key ? "•••••" : <span className="text-muted-foreground">env</span>}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+                    <span className="text-muted-foreground">
+                      {status === "ok"
+                        ? `${row.last_latency_ms ?? "?"}ms`
+                        : status === "error"
+                        ? "فشل"
+                        : "—"}
+                    </span>
+                  </div>
+                </td>
                 <td className="p-3">
                   {e.enabled ? (
                     <Badge variant="outline" className="border-green-500/40 text-green-600">
@@ -153,10 +206,11 @@ function EndpointsPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+              );
+            })}
             {list.data?.length === 0 && (
               <tr>
-                <td colSpan={8} className="p-8 text-center text-muted-foreground">
+                <td colSpan={10} className="p-8 text-center text-muted-foreground">
                   لا يوجد endpoints. أضف واحداً للبدء.
                 </td>
               </tr>
@@ -220,6 +274,43 @@ function EndpointsPage() {
                   value={editing.api_version ?? ""}
                   onChange={(e) => setEditing({ ...editing, api_version: e.target.value })}
                   placeholder="2024-10-21"
+                />
+              </Field>
+              <Field label="API Key (اترك فارغاً لاستخدام AZURE_OPENAI_API_KEY)">
+                <div className="flex gap-2">
+                  <Input
+                    type={showKey ? "text" : "password"}
+                    value={(editing as { api_key?: string | null }).api_key ?? ""}
+                    onChange={(e) => setEditing({ ...editing, api_key: e.target.value } as never)}
+                    placeholder="••••••••"
+                    autoComplete="off"
+                  />
+                  <Button type="button" variant="outline" size="sm" onClick={() => setShowKey((s) => !s)}>
+                    {showKey ? "إخفاء" : "إظهار"}
+                  </Button>
+                </div>
+              </Field>
+              <Field label='Extra Headers (JSON، مثل: {"x-custom":"value"})'>
+                <Textarea
+                  rows={2}
+                  value={(() => {
+                    const h = (editing as { extra_headers?: Record<string, string> | null }).extra_headers;
+                    return h && Object.keys(h).length ? JSON.stringify(h, null, 2) : "";
+                  })()}
+                  onChange={(e) => {
+                    const raw = e.target.value.trim();
+                    if (!raw) {
+                      setEditing({ ...editing, extra_headers: {} } as never);
+                      return;
+                    }
+                    try {
+                      const parsed = JSON.parse(raw) as Record<string, string>;
+                      setEditing({ ...editing, extra_headers: parsed } as never);
+                    } catch {
+                      /* keep as-is until valid */
+                    }
+                  }}
+                  placeholder='{"x-my-header":"value"}'
                 />
               </Field>
               <div className="grid grid-cols-3 gap-3">
