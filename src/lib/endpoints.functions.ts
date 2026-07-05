@@ -70,35 +70,71 @@ export const deleteEndpoint = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+async function pingEndpoint(id: string) {
+  const { getEndpoint, callAzureStream } = await import("@/lib/ai-gateway.server");
+  const ep = await getEndpoint(id);
+  const started = Date.now();
+  try {
+    const r = await callAzureStream(ep, [{ role: "user", content: "ping" }]);
+    const latency = Date.now() - started;
+    if (!r.ok) {
+      const t = await r.text().catch(() => "");
+      return { ok: false, status: r.status, latency_ms: latency, error: t.slice(0, 500) };
+    }
+    const reader = r.body!.getReader();
+    let bytes = 0;
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      bytes += value?.byteLength ?? 0;
+      if (bytes > 4096) break;
+    }
+    await reader.cancel();
+    return { ok: true, status: r.status, latency_ms: Date.now() - started };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e), latency_ms: Date.now() - started };
+  }
+}
+
 export const testEndpoint = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data, context }) => {
     await requireAdmin(context.supabase, context.userId);
-    const { getEndpoint, callAzureStream } = await import("@/lib/ai-gateway.server");
-    const ep = await getEndpoint(data.id);
-    const started = Date.now();
-    try {
-      const r = await callAzureStream(ep, [
-        { role: "user", content: "ping" },
-      ]);
-      const latency = Date.now() - started;
-      if (!r.ok) {
-        const t = await r.text().catch(() => "");
-        return { ok: false, status: r.status, latency_ms: latency, error: t.slice(0, 500) };
-      }
-      // consume small
-      const reader = r.body!.getReader();
-      let bytes = 0;
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        bytes += value?.byteLength ?? 0;
-        if (bytes > 4096) break;
-      }
-      await reader.cancel();
-      return { ok: true, status: r.status, latency_ms: Date.now() - started };
-    } catch (e) {
-      return { ok: false, error: e instanceof Error ? e.message : String(e), latency_ms: Date.now() - started };
-    }
+    const res = await pingEndpoint(data.id);
+    await context.supabase
+      .from("ai_endpoints")
+      .update({
+        last_status: res.ok ? "ok" : "error",
+        last_latency_ms: res.latency_ms ?? null,
+        last_checked_at: new Date().toISOString(),
+      })
+      .eq("id", data.id);
+    return res;
   });
+
+export const testAllEndpoints = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context.supabase, context.userId);
+    const { data: rows } = await context.supabase
+      .from("ai_endpoints")
+      .select("id")
+      .eq("enabled", true);
+    const results = await Promise.all(
+      (rows ?? []).map(async (r) => {
+        const res = await pingEndpoint(r.id);
+        await context.supabase
+          .from("ai_endpoints")
+          .update({
+            last_status: res.ok ? "ok" : "error",
+            last_latency_ms: res.latency_ms ?? null,
+            last_checked_at: new Date().toISOString(),
+          })
+          .eq("id", r.id);
+        return { id: r.id, ...res };
+      }),
+    );
+    return results;
+  });
+
