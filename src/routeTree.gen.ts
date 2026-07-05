@@ -50,6 +50,7 @@ import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
 import { Route as AppAiGatewayPoliciesRouteImport } from './routes/_app/ai-gateway.policies'
 import { Route as AppAiGatewayLogsRouteImport } from './routes/_app/ai-gateway.logs'
 import { Route as AppAiGatewayEndpointsRouteImport } from './routes/_app/ai-gateway.endpoints'
+import { Route as AppAiGatewayAgentsRouteImport } from './routes/_app/ai-gateway.agents'
 import { Route as ApiToolsIdTestRouteImport } from './routes/api/tools/$id/test'
 import { Route as ApiPromptsIdTestRouteImport } from './routes/api/prompts/$id/test'
 import { Route as ApiKnowledgeSourcesIdRouteImport } from './routes/api/knowledge/sources/$id'
@@ -269,6 +270,11 @@ const AppAiGatewayEndpointsRoute = AppAiGatewayEndpointsRouteImport.update({
   path: '/ai-gateway/endpoints',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAiGatewayAgentsRoute = AppAiGatewayAgentsRouteImport.update({
+  id: '/ai-gateway/agents',
+  path: '/ai-gateway/agents',
+  getParentRoute: () => AppRoute,
+} as any)
 const ApiToolsIdTestRoute = ApiToolsIdTestRouteImport.update({
   id: '/$id/test',
   path: '/$id/test',
@@ -362,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/api/jobs': typeof ApiJobsRouteWithChildren
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
+  '/ai-gateway/agents': typeof AppAiGatewayAgentsRoute
   '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/ai-gateway/logs': typeof AppAiGatewayLogsRoute
   '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
@@ -418,6 +425,7 @@ export interface FileRoutesByTo {
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/': typeof AppIndexRoute
+  '/ai-gateway/agents': typeof AppAiGatewayAgentsRoute
   '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/ai-gateway/logs': typeof AppAiGatewayLogsRoute
   '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
@@ -476,6 +484,7 @@ export interface FileRoutesById {
   '/api/prompts': typeof ApiPromptsRouteWithChildren
   '/api/tools': typeof ApiToolsRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/_app/ai-gateway/agents': typeof AppAiGatewayAgentsRoute
   '/_app/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/_app/ai-gateway/logs': typeof AppAiGatewayLogsRoute
   '/_app/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
@@ -534,6 +543,7 @@ export interface FileRouteTypes {
     | '/api/jobs'
     | '/api/prompts'
     | '/api/tools'
+    | '/ai-gateway/agents'
     | '/ai-gateway/endpoints'
     | '/ai-gateway/logs'
     | '/ai-gateway/policies'
@@ -590,6 +600,7 @@ export interface FileRouteTypes {
     | '/api/prompts'
     | '/api/tools'
     | '/'
+    | '/ai-gateway/agents'
     | '/ai-gateway/endpoints'
     | '/ai-gateway/logs'
     | '/ai-gateway/policies'
@@ -647,6 +658,7 @@ export interface FileRouteTypes {
     | '/api/prompts'
     | '/api/tools'
     | '/_app/'
+    | '/_app/ai-gateway/agents'
     | '/_app/ai-gateway/endpoints'
     | '/_app/ai-gateway/logs'
     | '/_app/ai-gateway/policies'
@@ -1004,6 +1016,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAiGatewayEndpointsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/ai-gateway/agents': {
+      id: '/_app/ai-gateway/agents'
+      path: '/ai-gateway/agents'
+      fullPath: '/ai-gateway/agents'
+      preLoaderRoute: typeof AppAiGatewayAgentsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/api/tools/$id/test': {
       id: '/api/tools/$id/test'
       path: '/$id/test'
@@ -1118,6 +1137,7 @@ interface AppRouteChildren {
   AppStorageRoute: typeof AppStorageRoute
   AppToolsRoute: typeof AppToolsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAiGatewayAgentsRoute: typeof AppAiGatewayAgentsRoute
   AppAiGatewayEndpointsRoute: typeof AppAiGatewayEndpointsRoute
   AppAiGatewayLogsRoute: typeof AppAiGatewayLogsRoute
   AppAiGatewayPoliciesRoute: typeof AppAiGatewayPoliciesRoute
@@ -1137,6 +1157,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppStorageRoute: AppStorageRoute,
   AppToolsRoute: AppToolsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAiGatewayAgentsRoute: AppAiGatewayAgentsRoute,
   AppAiGatewayEndpointsRoute: AppAiGatewayEndpointsRoute,
   AppAiGatewayLogsRoute: AppAiGatewayLogsRoute,
   AppAiGatewayPoliciesRoute: AppAiGatewayPoliciesRoute,
