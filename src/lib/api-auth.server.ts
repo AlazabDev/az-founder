@@ -58,7 +58,7 @@ export const requireApiAuth = createMiddleware().server(async ({ next, request }
 export const requireApiAdmin = createMiddleware().server(async ({ next, request }) => {
   const r = await verifyBearer(request);
   if (!r.ok) throw r.response;
-  const { data } = await r.supabase.rpc("has_role", { _user_id: r.userId, _role: "admin" });
+  const { data } = await r.supabase.rpc("has_role", { _user_id: r.userId, _role: "admin" as never });
   if (!data) throw forbidden("Admin only");
   return next({ context: { userId: r.userId, token: r.token, supabase: r.supabase } });
 });
