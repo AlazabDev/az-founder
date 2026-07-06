@@ -21,7 +21,7 @@ function forbidden(msg = "Forbidden"): Response {
 }
 
 async function verifyBearer(request: Request): Promise<
-  | { ok: true; userId: string; token: string; supabase: ReturnType<typeof createClient> }
+  | { ok: true; userId: string; token: string; supabase: SupabaseClient<Database> }
   | { ok: false; response: Response }
 > {
   const authHeader = request.headers.get("authorization") ?? "";
@@ -32,7 +32,7 @@ async function verifyBearer(request: Request): Promise<
   const key = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) return { ok: false, response: unauthorized("Auth misconfigured") };
 
-  const supabase = createClient(url, key, {
+  const supabase = createClient<Database>(url, key, {
     global: { headers: { Authorization: `Bearer ${token}` } },
     auth: { persistSession: false, autoRefreshToken: false, storage: undefined },
   });
