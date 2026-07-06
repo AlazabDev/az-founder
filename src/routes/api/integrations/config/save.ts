@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAdmin } from "@/lib/api-auth.server";
 import { jsonOk, jsonErr } from "@/lib/azure.server";
 
 interface SaveBody {
@@ -8,6 +9,7 @@ interface SaveBody {
 
 export const Route = createFileRoute("/api/integrations/config/save")({
   server: {
+    middleware: [requireApiAdmin],
     handlers: {
       POST: async ({ request }) => {
         let body: SaveBody = {};

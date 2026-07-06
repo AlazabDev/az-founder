@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAuth } from "@/lib/api-auth.server";
 import { buildIntegrationStatus, jsonOk } from "@/lib/azure.server";
 
 // Tools page expects: { id, name, description?, status: "ok"|"warn"|"err"|"idle", endpoint?, lastCheckedAt? }
 export const Route = createFileRoute("/api/tools")({
   server: {
+    middleware: [requireApiAuth],
     handlers: {
       GET: async () => {
         const items = buildIntegrationStatus().map((s) => ({

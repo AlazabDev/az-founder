@@ -42,10 +42,6 @@ import { Route as ApiDataUploadRouteImport } from './routes/api/data/upload'
 import { Route as ApiDataJobsRouteImport } from './routes/api/data/jobs'
 import { Route as ApiDataAnalyzeRouteImport } from './routes/api/data/analyze'
 import { Route as ApiDashboardOverviewRouteImport } from './routes/api/dashboard/overview'
-import { Route as ApiAuthRefreshRouteImport } from './routes/api/auth/refresh'
-import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
-import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
-import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
 import { Route as ApiAnalyticsOverviewRouteImport } from './routes/api/analytics/overview'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
 import { Route as AppAiGatewayPoliciesRouteImport } from './routes/_app/ai-gateway.policies'
@@ -231,26 +227,6 @@ const ApiDashboardOverviewRoute = ApiDashboardOverviewRouteImport.update({
   path: '/api/dashboard/overview',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiAuthRefreshRoute = ApiAuthRefreshRouteImport.update({
-  id: '/api/auth/refresh',
-  path: '/api/auth/refresh',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthMeRoute = ApiAuthMeRouteImport.update({
-  id: '/api/auth/me',
-  path: '/api/auth/me',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
-  id: '/api/auth/logout',
-  path: '/api/auth/logout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
-  id: '/api/auth/login',
-  path: '/api/auth/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiAnalyticsOverviewRoute = ApiAnalyticsOverviewRouteImport.update({
   id: '/api/analytics/overview',
   path: '/api/analytics/overview',
@@ -381,10 +357,6 @@ export interface FileRoutesByFullPath {
   '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
-  '/api/auth/login': typeof ApiAuthLoginRoute
-  '/api/auth/logout': typeof ApiAuthLogoutRoute
-  '/api/auth/me': typeof ApiAuthMeRoute
-  '/api/auth/refresh': typeof ApiAuthRefreshRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
   '/api/data/analyze': typeof ApiDataAnalyzeRoute
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
@@ -439,10 +411,6 @@ export interface FileRoutesByTo {
   '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
-  '/api/auth/login': typeof ApiAuthLoginRoute
-  '/api/auth/logout': typeof ApiAuthLogoutRoute
-  '/api/auth/me': typeof ApiAuthMeRoute
-  '/api/auth/refresh': typeof ApiAuthRefreshRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
   '/api/data/analyze': typeof ApiDataAnalyzeRoute
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
@@ -499,10 +467,6 @@ export interface FileRoutesById {
   '/_app/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
-  '/api/auth/login': typeof ApiAuthLoginRoute
-  '/api/auth/logout': typeof ApiAuthLogoutRoute
-  '/api/auth/me': typeof ApiAuthMeRoute
-  '/api/auth/refresh': typeof ApiAuthRefreshRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
   '/api/data/analyze': typeof ApiDataAnalyzeRoute
   '/api/data/jobs': typeof ApiDataJobsRouteWithChildren
@@ -559,10 +523,6 @@ export interface FileRouteTypes {
     | '/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
-    | '/api/auth/login'
-    | '/api/auth/logout'
-    | '/api/auth/me'
-    | '/api/auth/refresh'
     | '/api/dashboard/overview'
     | '/api/data/analyze'
     | '/api/data/jobs'
@@ -617,10 +577,6 @@ export interface FileRouteTypes {
     | '/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
-    | '/api/auth/login'
-    | '/api/auth/logout'
-    | '/api/auth/me'
-    | '/api/auth/refresh'
     | '/api/dashboard/overview'
     | '/api/data/analyze'
     | '/api/data/jobs'
@@ -676,10 +632,6 @@ export interface FileRouteTypes {
     | '/_app/ai-gateway/policies'
     | '/api/ai/chat'
     | '/api/analytics/overview'
-    | '/api/auth/login'
-    | '/api/auth/logout'
-    | '/api/auth/me'
-    | '/api/auth/refresh'
     | '/api/dashboard/overview'
     | '/api/data/analyze'
     | '/api/data/jobs'
@@ -719,10 +671,6 @@ export interface RootRouteChildren {
   ApiToolsRoute: typeof ApiToolsRouteWithChildren
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiAnalyticsOverviewRoute: typeof ApiAnalyticsOverviewRoute
-  ApiAuthLoginRoute: typeof ApiAuthLoginRoute
-  ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
-  ApiAuthMeRoute: typeof ApiAuthMeRoute
-  ApiAuthRefreshRoute: typeof ApiAuthRefreshRoute
   ApiDashboardOverviewRoute: typeof ApiDashboardOverviewRoute
   ApiDataAnalyzeRoute: typeof ApiDataAnalyzeRoute
   ApiDataJobsRoute: typeof ApiDataJobsRouteWithChildren
@@ -970,34 +918,6 @@ declare module '@tanstack/react-router' {
       path: '/api/dashboard/overview'
       fullPath: '/api/dashboard/overview'
       preLoaderRoute: typeof ApiDashboardOverviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/refresh': {
-      id: '/api/auth/refresh'
-      path: '/api/auth/refresh'
-      fullPath: '/api/auth/refresh'
-      preLoaderRoute: typeof ApiAuthRefreshRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/me': {
-      id: '/api/auth/me'
-      path: '/api/auth/me'
-      fullPath: '/api/auth/me'
-      preLoaderRoute: typeof ApiAuthMeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/logout': {
-      id: '/api/auth/logout'
-      path: '/api/auth/logout'
-      fullPath: '/api/auth/logout'
-      preLoaderRoute: typeof ApiAuthLogoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/login': {
-      id: '/api/auth/login'
-      path: '/api/auth/login'
-      fullPath: '/api/auth/login'
-      preLoaderRoute: typeof ApiAuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/analytics/overview': {
@@ -1299,10 +1219,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiToolsRoute: ApiToolsRouteWithChildren,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiAnalyticsOverviewRoute: ApiAnalyticsOverviewRoute,
-  ApiAuthLoginRoute: ApiAuthLoginRoute,
-  ApiAuthLogoutRoute: ApiAuthLogoutRoute,
-  ApiAuthMeRoute: ApiAuthMeRoute,
-  ApiAuthRefreshRoute: ApiAuthRefreshRoute,
   ApiDashboardOverviewRoute: ApiDashboardOverviewRoute,
   ApiDataAnalyzeRoute: ApiDataAnalyzeRoute,
   ApiDataJobsRoute: ApiDataJobsRouteWithChildren,

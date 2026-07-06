@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAuth } from "@/lib/api-auth.server";
 import { jsonOk, jsonErr, readAzureConfig, currentMode } from "@/lib/azure.server";
 import { getFileMeta, extractText } from "@/lib/gdrive.server";
 
@@ -38,6 +39,7 @@ async function summarize(text: string, instructions: string, language: "ar" | "e
 
 export const Route = createFileRoute("/api/gdrive/report")({
   server: {
+    middleware: [requireApiAuth],
     handlers: {
       POST: async ({ request }) => {
         let body: Body = {};

@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAdmin } from "@/lib/api-auth.server";
 import { jsonOk } from "@/lib/azure.server";
 
 export const Route = createFileRoute("/api/integrations/$id/secret")({
   server: {
+    middleware: [requireApiAdmin],
     handlers: {
       DELETE: async ({ params }) =>
         jsonOk({

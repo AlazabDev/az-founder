@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAuth } from "@/lib/api-auth.server";
 import { currentMode, jsonOk, jsonErr, readAzureConfig } from "@/lib/azure.server";
 
 interface ChatBody {
@@ -40,6 +41,7 @@ async function callAzureOpenAI(prompt: string, model: string): Promise<string> {
 
 export const Route = createFileRoute("/api/ai/chat")({
   server: {
+    middleware: [requireApiAuth],
     handlers: {
       POST: async ({ request }) => {
         let body: ChatBody = {};
