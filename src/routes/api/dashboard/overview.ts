@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAuth } from "@/lib/api-auth.server";
 import {
   buildIntegrationStatus,
   currentMode,
@@ -54,7 +55,8 @@ function buildOverview() {
 }
 
 export const Route = createFileRoute("/api/dashboard/overview")({
-  server: { handlers: { GET: async () => jsonOk(buildOverview()) } },
+  server: {
+    middleware: [requireApiAuth], handlers: { GET: async () => jsonOk(buildOverview()) } },
 });
 
 export const buildOverviewPayload = buildOverview;

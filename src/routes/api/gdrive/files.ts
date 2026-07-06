@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAuth } from "@/lib/api-auth.server";
 import { jsonOk, jsonErr } from "@/lib/azure.server";
 import { listFiles } from "@/lib/gdrive.server";
 
 export const Route = createFileRoute("/api/gdrive/files")({
   server: {
+    middleware: [requireApiAuth],
     handlers: {
       GET: async ({ request }) => {
         const url = new URL(request.url);

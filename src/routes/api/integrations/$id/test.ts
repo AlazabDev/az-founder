@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAdmin } from "@/lib/api-auth.server";
 import { buildIntegrationStatus, jsonOk, jsonErr, nowIso } from "@/lib/azure.server";
 
 export const Route = createFileRoute("/api/integrations/$id/test")({
   server: {
+    middleware: [requireApiAdmin],
     handlers: {
       POST: async ({ params }) => {
         const id = params.id;

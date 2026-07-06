@@ -5,6 +5,7 @@
  *   data: {"done":true, "conversationId":"..."}
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { requireApiAuth } from "@/lib/api-auth.server";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import {
@@ -53,6 +54,7 @@ function sseEncode(obj: unknown): Uint8Array {
 
 export const Route = createFileRoute("/api/chat")({
   server: {
+    middleware: [requireApiAuth],
     handlers: {
       POST: async ({ request }) => {
         const userId = await authUser(request);
