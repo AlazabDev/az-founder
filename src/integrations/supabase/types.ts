@@ -541,8 +541,23 @@ export type Database = {
       }
     }
     Enums: {
-      agent_kind: "copilot" | "core" | "prod" | "maint" | "finance" | "custom"
-      ai_provider: "azure_openai" | "openai" | "lovable" | "apim"
+      agent_kind:
+        | "copilot"
+        | "core"
+        | "prod"
+        | "maint"
+        | "finance"
+        | "custom"
+        | "auth"
+        | "project"
+        | "vision"
+      ai_provider:
+        | "azure_openai"
+        | "openai"
+        | "lovable"
+        | "apim"
+        | "ollama"
+        | "foundry"
       app_role: "admin" | "user"
       message_role: "system" | "user" | "assistant" | "tool"
       policy_type:
@@ -680,8 +695,25 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      agent_kind: ["copilot", "core", "prod", "maint", "finance", "custom"],
-      ai_provider: ["azure_openai", "openai", "lovable", "apim"],
+      agent_kind: [
+        "copilot",
+        "core",
+        "prod",
+        "maint",
+        "finance",
+        "custom",
+        "auth",
+        "project",
+        "vision",
+      ],
+      ai_provider: [
+        "azure_openai",
+        "openai",
+        "lovable",
+        "apim",
+        "ollama",
+        "foundry",
+      ],
       app_role: ["admin", "user"],
       message_role: ["system", "user", "assistant", "tool"],
       policy_type: [
