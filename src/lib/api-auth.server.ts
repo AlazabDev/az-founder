@@ -3,7 +3,8 @@
  * Validates the Supabase bearer token; throws a 401 Response on failure.
  */
 import { createMiddleware } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
 function unauthorized(msg = "Unauthorized"): Response {
   return new Response(JSON.stringify({ error: msg }), {
