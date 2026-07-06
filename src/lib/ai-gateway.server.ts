@@ -6,7 +6,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-type Provider = "azure_openai" | "openai" | "lovable" | "apim";
+type Provider = "azure_openai" | "openai" | "lovable" | "apim" | "ollama" | "foundry";
 type UsageStatus = "success" | "blocked" | "error" | "rate_limited";
 
 export interface Endpoint {
