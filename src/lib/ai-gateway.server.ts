@@ -6,7 +6,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-type Provider = "azure_openai" | "openai" | "lovable" | "apim";
+type Provider = "azure_openai" | "openai" | "lovable" | "apim" | "ollama" | "foundry";
 type UsageStatus = "success" | "blocked" | "error" | "rate_limited";
 
 export interface Endpoint {
@@ -338,20 +338,59 @@ function buildAuthHeaders(ep: Endpoint): Record<string, string> {
   return headers;
 }
 
+/* ---------- Foundry (Azure AI Services) ---------- */
+function buildFoundryUrl(ep: Endpoint): string {
+  const base = (ep.base_url ?? "https://az-ai-resource.services.ai.azure.com").replace(/\/$/, "");
+  const apiVersion = ep.api_version ?? "2024-10-21";
+  const deployment = ep.deployment_name ?? ep.model;
+  return `${base}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`;
+}
+function buildFoundryHeaders(ep: Endpoint): Record<string, string> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const key = ep.api_key ?? process.env.FOUNDRY_API_KEY ?? process.env.AZURE_OPENAI_API_KEY;
+  if (key) headers["api-key"] = key;
+  if (ep.extra_headers) for (const [k, v] of Object.entries(ep.extra_headers)) if (typeof v === "string") headers[k] = v;
+  return headers;
+}
+
+/* ---------- Ollama (OpenAI-compatible) ---------- */
+function buildOllamaUrl(ep: Endpoint): string {
+  const base = (ep.base_url ?? "https://ollama.alazab.cloud").replace(/\/$/, "");
+  return `${base}/v1/chat/completions`;
+}
+function buildOllamaHeaders(ep: Endpoint): Record<string, string> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const user = process.env.OLLAMA_USER ?? "azureuser";
+  const pass = process.env.OLLAMA_PASS;
+  if (pass) headers["Authorization"] = "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
+  if (ep.extra_headers) for (const [k, v] of Object.entries(ep.extra_headers)) if (typeof v === "string") headers[k] = v;
+  return headers;
+}
+
 export async function callAzureStream(
   ep: Endpoint,
   messages: ChatMsg[],
 ): Promise<Response> {
-  const r = await fetch(buildAzureUrl(ep), {
-    method: "POST",
-    headers: buildAuthHeaders(ep),
-    body: JSON.stringify({
-      messages,
-      stream: true,
-      stream_options: { include_usage: true },
-    }),
-  });
-  return r;
+  let url: string;
+  let headers: Record<string, string>;
+  const body: Record<string, unknown> = {
+    messages,
+    stream: true,
+    stream_options: { include_usage: true },
+  };
+  if (ep.provider === "ollama") {
+    url = buildOllamaUrl(ep);
+    headers = buildOllamaHeaders(ep);
+    body.model = ep.deployment_name ?? ep.model;
+    delete body.stream_options;
+  } else if (ep.provider === "foundry") {
+    url = buildFoundryUrl(ep);
+    headers = buildFoundryHeaders(ep);
+  } else {
+    url = buildAzureUrl(ep);
+    headers = buildAuthHeaders(ep);
+  }
+  return fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
 }
 
 /* ---------------- Main entrypoint: guarded streaming ---------------- */
