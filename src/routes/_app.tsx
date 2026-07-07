@@ -52,8 +52,10 @@ interface NavItem {
 const NAV: NavItem[] = [
   { to: "/", label: "لوحة التحكم", icon: LayoutDashboard, exact: true },
   { to: "/chat", label: "المحادثة الذكية", icon: MessagesSquare },
+  { to: "/catalog", label: "كتالوج النماذج", icon: BookMarked },
   { to: "/training", label: "بيئة التدريب", icon: GraduationCap },
   { to: "/ai-gateway", label: "AI Gateway", icon: Cpu },
+  { to: "/ollama", label: "بيانات Ollama", icon: ServerCog },
   { to: "/storage", label: "المخازن السحابية", icon: Cloud },
   { to: "/integrations", label: "الربط والمعرفات", icon: PlugZap },
   { to: "/data", label: "فحص وتنظيم البيانات", icon: FolderSearch },
@@ -65,6 +67,7 @@ const NAV: NavItem[] = [
   { to: "/analytics", label: "التحليلات", icon: BarChart3 },
   { to: "/settings", label: "الإعدادات", icon: Settings },
 ] as const;
+
 
 function AppLayout() {
   const navigate = useNavigate();
