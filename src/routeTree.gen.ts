@@ -22,12 +22,14 @@ import { Route as AppToolsRouteImport } from './routes/_app/tools'
 import { Route as AppStorageRouteImport } from './routes/_app/storage'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 import { Route as AppPromptsRouteImport } from './routes/_app/prompts'
+import { Route as AppOllamaRouteImport } from './routes/_app/ollama'
 import { Route as AppKnowledgeRouteImport } from './routes/_app/knowledge'
 import { Route as AppJobsRouteImport } from './routes/_app/jobs'
 import { Route as AppIntegrationsRouteImport } from './routes/_app/integrations'
 import { Route as AppGdriveRouteImport } from './routes/_app/gdrive'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
+import { Route as AppCatalogRouteImport } from './routes/_app/catalog'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
 import { Route as AppAiGatewayIndexRouteImport } from './routes/_app/ai-gateway.index'
 import { Route as ApiPromptsIdRouteImport } from './routes/api/prompts/$id'
@@ -127,6 +129,11 @@ const AppPromptsRoute = AppPromptsRouteImport.update({
   path: '/prompts',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOllamaRoute = AppOllamaRouteImport.update({
+  id: '/ollama',
+  path: '/ollama',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppKnowledgeRoute = AppKnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
@@ -155,6 +162,11 @@ const AppDataRoute = AppDataRouteImport.update({
 const AppChatRoute = AppChatRouteImport.update({
   id: '/chat',
   path: '/chat',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCatalogRoute = AppCatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
@@ -336,12 +348,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/analytics': typeof AppAnalyticsRoute
+  '/catalog': typeof AppCatalogRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
   '/gdrive': typeof AppGdriveRoute
   '/integrations': typeof AppIntegrationsRoute
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
+  '/ollama': typeof AppOllamaRoute
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
   '/storage': typeof AppStorageRoute
@@ -389,12 +403,14 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/analytics': typeof AppAnalyticsRoute
+  '/catalog': typeof AppCatalogRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
   '/gdrive': typeof AppGdriveRoute
   '/integrations': typeof AppIntegrationsRoute
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
+  '/ollama': typeof AppOllamaRoute
   '/prompts': typeof AppPromptsRoute
   '/settings': typeof AppSettingsRoute
   '/storage': typeof AppStorageRoute
@@ -445,12 +461,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_app/analytics': typeof AppAnalyticsRoute
+  '/_app/catalog': typeof AppCatalogRoute
   '/_app/chat': typeof AppChatRoute
   '/_app/data': typeof AppDataRoute
   '/_app/gdrive': typeof AppGdriveRoute
   '/_app/integrations': typeof AppIntegrationsRoute
   '/_app/jobs': typeof AppJobsRoute
   '/_app/knowledge': typeof AppKnowledgeRoute
+  '/_app/ollama': typeof AppOllamaRoute
   '/_app/prompts': typeof AppPromptsRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/storage': typeof AppStorageRoute
@@ -502,12 +520,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/analytics'
+    | '/catalog'
     | '/chat'
     | '/data'
     | '/gdrive'
     | '/integrations'
     | '/jobs'
     | '/knowledge'
+    | '/ollama'
     | '/prompts'
     | '/settings'
     | '/storage'
@@ -555,12 +575,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/analytics'
+    | '/catalog'
     | '/chat'
     | '/data'
     | '/gdrive'
     | '/integrations'
     | '/jobs'
     | '/knowledge'
+    | '/ollama'
     | '/prompts'
     | '/settings'
     | '/storage'
@@ -610,12 +632,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/_app/analytics'
+    | '/_app/catalog'
     | '/_app/chat'
     | '/_app/data'
     | '/_app/gdrive'
     | '/_app/integrations'
     | '/_app/jobs'
     | '/_app/knowledge'
+    | '/_app/ollama'
     | '/_app/prompts'
     | '/_app/settings'
     | '/_app/storage'
@@ -780,6 +804,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPromptsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/ollama': {
+      id: '/_app/ollama'
+      path: '/ollama'
+      fullPath: '/ollama'
+      preLoaderRoute: typeof AppOllamaRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/knowledge': {
       id: '/_app/knowledge'
       path: '/knowledge'
@@ -820,6 +851,13 @@ declare module '@tanstack/react-router' {
       path: '/chat'
       fullPath: '/chat'
       preLoaderRoute: typeof AppChatRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/catalog': {
+      id: '/_app/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof AppCatalogRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/analytics': {
@@ -1065,12 +1103,14 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
+  AppCatalogRoute: typeof AppCatalogRoute
   AppChatRoute: typeof AppChatRoute
   AppDataRoute: typeof AppDataRoute
   AppGdriveRoute: typeof AppGdriveRoute
   AppIntegrationsRoute: typeof AppIntegrationsRoute
   AppJobsRoute: typeof AppJobsRoute
   AppKnowledgeRoute: typeof AppKnowledgeRoute
+  AppOllamaRoute: typeof AppOllamaRoute
   AppPromptsRoute: typeof AppPromptsRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppStorageRoute: typeof AppStorageRoute
@@ -1086,12 +1126,14 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAnalyticsRoute: AppAnalyticsRoute,
+  AppCatalogRoute: AppCatalogRoute,
   AppChatRoute: AppChatRoute,
   AppDataRoute: AppDataRoute,
   AppGdriveRoute: AppGdriveRoute,
   AppIntegrationsRoute: AppIntegrationsRoute,
   AppJobsRoute: AppJobsRoute,
   AppKnowledgeRoute: AppKnowledgeRoute,
+  AppOllamaRoute: AppOllamaRoute,
   AppPromptsRoute: AppPromptsRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppStorageRoute: AppStorageRoute,

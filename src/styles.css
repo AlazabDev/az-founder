@@ -70,9 +70,10 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.015 250);
 
-  /* Gold accent ~ #c89010 (darker for contrast on light bg) */
-  --primary: oklch(0.62 0.14 80);
-  --primary-foreground: oklch(0.99 0.005 90);
+  /* Brand yellow — Alazab #FFB900 */
+  --primary: oklch(0.82 0.175 85);
+  --primary-foreground: oklch(0.2 0.02 60);
+
 
   --secondary: oklch(0.95 0.008 250);
   --secondary-foreground: oklch(0.22 0.015 250);
@@ -89,14 +90,15 @@
   --success: oklch(0.6 0.15 155);
   --success-foreground: oklch(0.99 0.005 155);
 
-  --warning: oklch(0.72 0.16 70);
+  --warning: oklch(0.82 0.175 85);
   --warning-foreground: oklch(0.2 0.02 60);
 
   --border: oklch(0.9 0.008 250);
   --input: oklch(0.92 0.008 250);
-  --ring: oklch(0.62 0.14 80);
+  --ring: oklch(0.82 0.175 85);
 
-  --chart-1: oklch(0.62 0.14 80);
+  --chart-1: oklch(0.82 0.175 85);
+
   --chart-2: oklch(0.55 0.14 220);
   --chart-3: oklch(0.6 0.13 155);
   --chart-4: oklch(0.6 0.2 25);
@@ -104,12 +106,13 @@
 
   --sidebar: oklch(0.975 0.005 250);
   --sidebar-foreground: oklch(0.28 0.015 250);
-  --sidebar-primary: oklch(0.62 0.14 80);
-  --sidebar-primary-foreground: oklch(0.99 0.005 90);
+  --sidebar-primary: oklch(0.82 0.175 85);
+  --sidebar-primary-foreground: oklch(0.2 0.02 60);
   --sidebar-accent: oklch(0.93 0.012 250);
   --sidebar-accent-foreground: oklch(0.22 0.015 250);
   --sidebar-border: oklch(0.9 0.008 250);
-  --sidebar-ring: oklch(0.62 0.14 80);
+  --sidebar-ring: oklch(0.82 0.175 85);
+
 }
 
 .dark {
