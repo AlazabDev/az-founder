@@ -28,6 +28,7 @@ import { Route as AppIntegrationsRouteImport } from './routes/_app/integrations'
 import { Route as AppGdriveRouteImport } from './routes/_app/gdrive'
 import { Route as AppDataRouteImport } from './routes/_app/data'
 import { Route as AppChatRouteImport } from './routes/_app/chat'
+import { Route as AppCatalogRouteImport } from './routes/_app/catalog'
 import { Route as AppAnalyticsRouteImport } from './routes/_app/analytics'
 import { Route as AppAiGatewayIndexRouteImport } from './routes/_app/ai-gateway.index'
 import { Route as ApiPromptsIdRouteImport } from './routes/api/prompts/$id'
@@ -156,6 +157,11 @@ const AppDataRoute = AppDataRouteImport.update({
 const AppChatRoute = AppChatRouteImport.update({
   id: '/chat',
   path: '/chat',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCatalogRoute = AppCatalogRouteImport.update({
+  id: '/catalog',
+  path: '/catalog',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAnalyticsRoute = AppAnalyticsRouteImport.update({
@@ -342,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/analytics': typeof AppAnalyticsRoute
+  '/catalog': typeof AppCatalogRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
   '/gdrive': typeof AppGdriveRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/analytics': typeof AppAnalyticsRoute
+  '/catalog': typeof AppCatalogRoute
   '/chat': typeof AppChatRoute
   '/data': typeof AppDataRoute
   '/gdrive': typeof AppGdriveRoute
@@ -453,6 +461,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_app/analytics': typeof AppAnalyticsRoute
+  '/_app/catalog': typeof AppCatalogRoute
   '/_app/chat': typeof AppChatRoute
   '/_app/data': typeof AppDataRoute
   '/_app/gdrive': typeof AppGdriveRoute
@@ -511,6 +520,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/analytics'
+    | '/catalog'
     | '/chat'
     | '/data'
     | '/gdrive'
@@ -565,6 +575,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/analytics'
+    | '/catalog'
     | '/chat'
     | '/data'
     | '/gdrive'
@@ -621,6 +632,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/_app/analytics'
+    | '/_app/catalog'
     | '/_app/chat'
     | '/_app/data'
     | '/_app/gdrive'
@@ -832,6 +844,13 @@ declare module '@tanstack/react-router' {
       path: '/chat'
       fullPath: '/chat'
       preLoaderRoute: typeof AppChatRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/catalog': {
+      id: '/_app/catalog'
+      path: '/catalog'
+      fullPath: '/catalog'
+      preLoaderRoute: typeof AppCatalogRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/analytics': {
@@ -1096,6 +1115,7 @@ const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
+  AppCatalogRoute: typeof AppCatalogRoute
   AppChatRoute: typeof AppChatRoute
   AppDataRoute: typeof AppDataRoute
   AppGdriveRoute: typeof AppGdriveRoute
@@ -1117,6 +1137,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppAnalyticsRoute: AppAnalyticsRoute,
+  AppCatalogRoute: AppCatalogRoute,
   AppChatRoute: AppChatRoute,
   AppDataRoute: AppDataRoute,
   AppGdriveRoute: AppGdriveRoute,
