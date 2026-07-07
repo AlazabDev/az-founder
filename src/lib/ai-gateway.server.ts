@@ -354,15 +354,51 @@ function buildFoundryHeaders(ep: Endpoint): Record<string, string> {
 }
 
 /* ---------- Ollama (OpenAI-compatible) ---------- */
-function buildOllamaUrl(ep: Endpoint): string {
-  const base = (ep.base_url ?? "https://ollama.alazab.cloud").replace(/\/$/, "");
+interface OllamaConfig {
+  url: string;
+  user: string;
+  pass?: string;
+}
+
+let _ollamaCache: { at: number; cfg: OllamaConfig } | null = null;
+
+export async function getOllamaConfig(force = false): Promise<OllamaConfig> {
+  if (!force && _ollamaCache && Date.now() - _ollamaCache.at < 30_000) return _ollamaCache.cfg;
+  const cfg: OllamaConfig = {
+    url: process.env.OLLAMA_URL ?? "https://ollama.alazab.cloud",
+    user: process.env.OLLAMA_USER ?? "azureuser",
+    pass: process.env.OLLAMA_PASS,
+  };
+  try {
+    const sb = admin();
+    const { data } = await sb
+      .from("app_settings")
+      .select("key,value")
+      .in("key", ["ollama_url", "ollama_user", "ollama_pass"]);
+    for (const row of data ?? []) {
+      if (!row.value) continue;
+      if (row.key === "ollama_url") cfg.url = row.value;
+      else if (row.key === "ollama_user") cfg.user = row.value;
+      else if (row.key === "ollama_pass") cfg.pass = row.value;
+    }
+  } catch {
+    /* fallback to env only */
+  }
+  _ollamaCache = { at: Date.now(), cfg };
+  return cfg;
+}
+
+export function invalidateOllamaConfig() {
+  _ollamaCache = null;
+}
+
+function buildOllamaUrl(ep: Endpoint, cfg: OllamaConfig): string {
+  const base = (ep.base_url ?? cfg.url).replace(/\/$/, "");
   return `${base}/v1/chat/completions`;
 }
-function buildOllamaHeaders(ep: Endpoint): Record<string, string> {
+function buildOllamaHeaders(ep: Endpoint, cfg: OllamaConfig): Record<string, string> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const user = process.env.OLLAMA_USER ?? "azureuser";
-  const pass = process.env.OLLAMA_PASS;
-  if (pass) headers["Authorization"] = "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
+  if (cfg.pass) headers["Authorization"] = "Basic " + Buffer.from(`${cfg.user}:${cfg.pass}`).toString("base64");
   if (ep.extra_headers) for (const [k, v] of Object.entries(ep.extra_headers)) if (typeof v === "string") headers[k] = v;
   return headers;
 }
@@ -379,8 +415,9 @@ export async function callAzureStream(
     stream_options: { include_usage: true },
   };
   if (ep.provider === "ollama") {
-    url = buildOllamaUrl(ep);
-    headers = buildOllamaHeaders(ep);
+    const cfg = await getOllamaConfig();
+    url = buildOllamaUrl(ep, cfg);
+    headers = buildOllamaHeaders(ep, cfg);
     body.model = ep.deployment_name ?? ep.model;
     delete body.stream_options;
   } else if (ep.provider === "foundry") {
@@ -392,6 +429,8 @@ export async function callAzureStream(
   }
   return fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
 }
+
+
 
 /* ---------------- Main entrypoint: guarded streaming ---------------- */
 
