@@ -44,6 +44,7 @@ import { Route as ApiDataAnalyzeRouteImport } from './routes/api/data/analyze'
 import { Route as ApiDashboardOverviewRouteImport } from './routes/api/dashboard/overview'
 import { Route as ApiAnalyticsOverviewRouteImport } from './routes/api/analytics/overview'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai/chat'
+import { Route as AppSettingsOllamaRouteImport } from './routes/_app/settings.ollama'
 import { Route as AppAiGatewayPoliciesRouteImport } from './routes/_app/ai-gateway.policies'
 import { Route as AppAiGatewayLogsRouteImport } from './routes/_app/ai-gateway.logs'
 import { Route as AppAiGatewayEndpointsRouteImport } from './routes/_app/ai-gateway.endpoints'
@@ -237,6 +238,11 @@ const ApiAiChatRoute = ApiAiChatRouteImport.update({
   path: '/api/ai/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppSettingsOllamaRoute = AppSettingsOllamaRouteImport.update({
+  id: '/ollama',
+  path: '/ollama',
+  getParentRoute: () => AppSettingsRoute,
+} as any)
 const AppAiGatewayPoliciesRoute = AppAiGatewayPoliciesRouteImport.update({
   id: '/ai-gateway/policies',
   path: '/ai-gateway/policies',
@@ -343,7 +349,7 @@ export interface FileRoutesByFullPath {
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
   '/prompts': typeof AppPromptsRoute
-  '/settings': typeof AppSettingsRoute
+  '/settings': typeof AppSettingsRouteWithChildren
   '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
   '/training': typeof AppTrainingRoute
@@ -355,6 +361,7 @@ export interface FileRoutesByFullPath {
   '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/ai-gateway/logs': typeof AppAiGatewayLogsRoute
   '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
+  '/settings/ollama': typeof AppSettingsOllamaRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
@@ -396,7 +403,7 @@ export interface FileRoutesByTo {
   '/jobs': typeof AppJobsRoute
   '/knowledge': typeof AppKnowledgeRoute
   '/prompts': typeof AppPromptsRoute
-  '/settings': typeof AppSettingsRoute
+  '/settings': typeof AppSettingsRouteWithChildren
   '/storage': typeof AppStorageRoute
   '/tools': typeof AppToolsRoute
   '/training': typeof AppTrainingRoute
@@ -409,6 +416,7 @@ export interface FileRoutesByTo {
   '/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/ai-gateway/logs': typeof AppAiGatewayLogsRoute
   '/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
+  '/settings/ollama': typeof AppSettingsOllamaRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
@@ -452,7 +460,7 @@ export interface FileRoutesById {
   '/_app/jobs': typeof AppJobsRoute
   '/_app/knowledge': typeof AppKnowledgeRoute
   '/_app/prompts': typeof AppPromptsRoute
-  '/_app/settings': typeof AppSettingsRoute
+  '/_app/settings': typeof AppSettingsRouteWithChildren
   '/_app/storage': typeof AppStorageRoute
   '/_app/tools': typeof AppToolsRoute
   '/_app/training': typeof AppTrainingRoute
@@ -465,6 +473,7 @@ export interface FileRoutesById {
   '/_app/ai-gateway/endpoints': typeof AppAiGatewayEndpointsRoute
   '/_app/ai-gateway/logs': typeof AppAiGatewayLogsRoute
   '/_app/ai-gateway/policies': typeof AppAiGatewayPoliciesRoute
+  '/_app/settings/ollama': typeof AppSettingsOllamaRoute
   '/api/ai/chat': typeof ApiAiChatRoute
   '/api/analytics/overview': typeof ApiAnalyticsOverviewRoute
   '/api/dashboard/overview': typeof ApiDashboardOverviewRoute
@@ -521,6 +530,7 @@ export interface FileRouteTypes {
     | '/ai-gateway/endpoints'
     | '/ai-gateway/logs'
     | '/ai-gateway/policies'
+    | '/settings/ollama'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/dashboard/overview'
@@ -575,6 +585,7 @@ export interface FileRouteTypes {
     | '/ai-gateway/endpoints'
     | '/ai-gateway/logs'
     | '/ai-gateway/policies'
+    | '/settings/ollama'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/dashboard/overview'
@@ -630,6 +641,7 @@ export interface FileRouteTypes {
     | '/_app/ai-gateway/endpoints'
     | '/_app/ai-gateway/logs'
     | '/_app/ai-gateway/policies'
+    | '/_app/settings/ollama'
     | '/api/ai/chat'
     | '/api/analytics/overview'
     | '/api/dashboard/overview'
@@ -934,6 +946,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/settings/ollama': {
+      id: '/_app/settings/ollama'
+      path: '/ollama'
+      fullPath: '/settings/ollama'
+      preLoaderRoute: typeof AppSettingsOllamaRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
     '/_app/ai-gateway/policies': {
       id: '/_app/ai-gateway/policies'
       path: '/ai-gateway/policies'
@@ -1063,6 +1082,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AppSettingsRouteChildren {
+  AppSettingsOllamaRoute: typeof AppSettingsOllamaRoute
+}
+
+const AppSettingsRouteChildren: AppSettingsRouteChildren = {
+  AppSettingsOllamaRoute: AppSettingsOllamaRoute,
+}
+
+const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
+  AppSettingsRouteChildren,
+)
+
 interface AppRouteChildren {
   AppAnalyticsRoute: typeof AppAnalyticsRoute
   AppChatRoute: typeof AppChatRoute
@@ -1072,7 +1103,7 @@ interface AppRouteChildren {
   AppJobsRoute: typeof AppJobsRoute
   AppKnowledgeRoute: typeof AppKnowledgeRoute
   AppPromptsRoute: typeof AppPromptsRoute
-  AppSettingsRoute: typeof AppSettingsRoute
+  AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppStorageRoute: typeof AppStorageRoute
   AppToolsRoute: typeof AppToolsRoute
   AppTrainingRoute: typeof AppTrainingRoute
@@ -1093,7 +1124,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppJobsRoute: AppJobsRoute,
   AppKnowledgeRoute: AppKnowledgeRoute,
   AppPromptsRoute: AppPromptsRoute,
-  AppSettingsRoute: AppSettingsRoute,
+  AppSettingsRoute: AppSettingsRouteWithChildren,
   AppStorageRoute: AppStorageRoute,
   AppToolsRoute: AppToolsRoute,
   AppTrainingRoute: AppTrainingRoute,
