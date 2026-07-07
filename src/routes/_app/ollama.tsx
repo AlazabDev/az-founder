@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { getOllamaSettings, saveOllamaSettings } from "@/lib/settings.functions";
 
-export const Route = createFileRoute("/_app/settings/ollama")({
+export const Route = createFileRoute("/_app/ollama")({
   component: OllamaSettingsPage,
 });
 
