@@ -70,9 +70,10 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.22 0.015 250);
 
-  /* Gold accent ~ #c89010 (darker for contrast on light bg) */
-  --primary: oklch(0.62 0.14 80);
-  --primary-foreground: oklch(0.99 0.005 90);
+  /* Brand yellow — Alazab #FFB900 */
+  --primary: oklch(0.82 0.175 85);
+  --primary-foreground: oklch(0.2 0.02 60);
+
 
   --secondary: oklch(0.95 0.008 250);
   --secondary-foreground: oklch(0.22 0.015 250);
