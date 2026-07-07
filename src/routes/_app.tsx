@@ -23,7 +23,10 @@ import {
   Cloud,
   Cpu,
   GraduationCap,
+  BookMarked,
+  ServerCog,
 } from "lucide-react";
+
 
 import { isAuthenticated, clearSession, getUser, hydrateSession } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
