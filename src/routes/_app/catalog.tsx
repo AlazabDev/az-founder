@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Boxes, Search, CheckCircle2, XCircle, Clock, Star } from "lucide-react";
+import { Boxes, Search, CheckCircle2, XCircle, Clock, Star, MessageSquare, GraduationCap } from "lucide-react";
 
 import { PageHeader, EmptyState } from "@/components/console/PageHeader";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { listCatalog, type CatalogItem } from "@/lib/settings.functions";
 
