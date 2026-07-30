@@ -63,11 +63,27 @@ export const Route = createFileRoute("/api/chat")({
         const body = (await request.json()) as Body;
         if (!body?.message?.trim()) return new Response("message required", { status: 400 });
 
+        const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (body.endpointId && !UUID_RE.test(body.endpointId)) {
+          return new Response("invalid endpointId", { status: 400 });
+        }
+        if (body.conversationId && !UUID_RE.test(body.conversationId)) {
+          return new Response("invalid conversationId", { status: 400 });
+        }
+
         const db = admin();
 
-        // Ensure conversation
+        // Ensure conversation (and verify ownership when one is supplied)
         let convId = body.conversationId ?? null;
-        if (!convId) {
+        if (convId) {
+          const { data: owned } = await db
+            .from("ai_conversations")
+            .select("id")
+            .eq("id", convId)
+            .eq("user_id", userId)
+            .maybeSingle();
+          if (!owned) return new Response("Forbidden", { status: 403 });
+        } else {
           const { data, error } = await db
             .from("ai_conversations")
             .insert({
@@ -107,13 +123,15 @@ export const Route = createFileRoute("/api/chat")({
           return new Response(pre.error ?? "blocked", { status: pre.status ?? 400 });
         }
 
-        // Load prior messages for context (last 20)
+        // Load prior messages for context (last 20) — scoped to the caller
         const { data: prior } = await db
           .from("ai_messages")
           .select("role, content")
           .eq("conversation_id", convId)
+          .eq("user_id", userId)
           .order("created_at", { ascending: true })
           .limit(20);
+
 
         const messages: ChatMsg[] = [];
         const sys = body.systemPrompt ?? "أنت مساعد ذكي وموجز يجيب بالعربية عند السؤال بها.";
