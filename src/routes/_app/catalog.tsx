@@ -167,6 +167,22 @@ function CatalogPage() {
                   {item.endpoint_url}
                 </div>
               </div>
+
+              <div className="mt-auto flex gap-2 pt-1">
+                <Button asChild size="sm" variant="default" className="flex-1" disabled={!item.enabled}>
+                  <Link to="/chat" search={{ endpoint: item.id }}>
+                    <MessageSquare className="ml-1.5 h-3.5 w-3.5" />
+                    دردشة
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline" className="flex-1">
+                  <Link to="/training" search={{ endpoint: item.id }}>
+                    <GraduationCap className="ml-1.5 h-3.5 w-3.5" />
+                    تدريب
+                  </Link>
+                </Button>
+              </div>
+
             </div>
           ))}
         </div>
