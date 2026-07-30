@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/select";
 
 export const Route = createFileRoute("/_app/chat")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    endpoint: typeof search.endpoint === "string" ? search.endpoint : undefined,
+  }),
   component: ChatPage,
 });
 
