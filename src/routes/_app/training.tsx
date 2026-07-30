@@ -75,8 +75,8 @@ function TrainingPage() {
   async function send() {
     const text = input.trim();
     if (!text || streaming) return;
-    if (!agentId) {
-      toast.error("اختر وكيلاً أولاً");
+    if (!agentId && !endpointId) {
+      toast.error("اختر وكيلاً أو نموذجاً من الكتالوج");
       return;
     }
     setInput("");
