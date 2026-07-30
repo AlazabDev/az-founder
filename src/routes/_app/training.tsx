@@ -23,6 +23,9 @@ import { listAgents } from "@/lib/agents.functions";
 import { listEndpoints } from "@/lib/endpoints.functions";
 
 export const Route = createFileRoute("/_app/training")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    endpoint: typeof search.endpoint === "string" ? search.endpoint : undefined,
+  }),
   component: TrainingPage,
 });
 
@@ -32,6 +35,7 @@ interface Msg {
 }
 
 function TrainingPage() {
+  const { endpoint: endpointParam } = Route.useSearch();
   const fetchAgents = useServerFn(listAgents);
   const fetchEndpoints = useServerFn(listEndpoints);
 
@@ -39,6 +43,7 @@ function TrainingPage() {
   const eps = useQuery({ queryKey: ["endpoints-training"], queryFn: fetchEndpoints });
 
   const [agentId, setAgentId] = useState<string>("");
+  const [endpointOverride, setEndpointOverride] = useState<string>(endpointParam ?? "agent");
   const [systemPrompt, setSystemPrompt] = useState<string>("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -47,9 +52,14 @@ function TrainingPage() {
   const endRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  useEffect(() => {
+    if (endpointParam) setEndpointOverride(endpointParam);
+  }, [endpointParam]);
+
   const agent = (agents.data ?? []).find((a) => a.id === agentId);
-  const endpointId = agent?.endpoint_id ?? "";
+  const endpointId = endpointOverride !== "agent" ? endpointOverride : (agent?.endpoint_id ?? "");
   const endpoint = (eps.data ?? []).find((e) => e.id === endpointId);
+
 
   // Preload agent's system prompt when picked
   useEffect(() => {
@@ -65,8 +75,8 @@ function TrainingPage() {
   async function send() {
     const text = input.trim();
     if (!text || streaming) return;
-    if (!agentId) {
-      toast.error("اختر وكيلاً أولاً");
+    if (!agentId && !endpointId) {
+      toast.error("اختر وكيلاً أو نموذجاً من الكتالوج");
       return;
     }
     setInput("");
@@ -179,19 +189,44 @@ function TrainingPage() {
               </SelectContent>
             </Select>
 
-            {agent && (
+            <label className="mb-1 mt-4 block text-xs text-muted-foreground">
+              النموذج (Endpoint)
+            </label>
+            <Select value={endpointOverride} onValueChange={setEndpointOverride}>
+              <SelectTrigger>
+                <SelectValue placeholder="اختر نموذجاً" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="agent">حسب الوكيل / الافتراضي</SelectItem>
+                {(eps.data ?? []).filter((e) => e.enabled).map((e) => (
+                  <SelectItem key={e.id} value={e.id}>
+                    {e.name} — {e.model}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            {(agent || endpoint) && (
               <div className="mt-3 space-y-1 text-xs text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{agent.kind}</Badge>
-                  {agent.version && <span>v{agent.version}</span>}
-                </div>
+                {agent && (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{agent.kind}</Badge>
+                    {agent.version && <span>v{agent.version}</span>}
+                  </div>
+                )}
                 {endpoint && (
-                  <div>
-                    Endpoint: <span className="font-mono">{endpoint.name}</span>
+                  <div className="space-y-0.5">
+                    <div>
+                      Endpoint: <span className="font-mono">{endpoint.name}</span>
+                    </div>
+                    <div>
+                      Model: <span className="font-mono">{endpoint.model}</span>
+                    </div>
                   </div>
                 )}
               </div>
             )}
+
 
             <label className="mb-1 mt-4 block text-xs text-muted-foreground">
               System Prompt (تدريب مباشر)

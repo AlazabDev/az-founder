@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useMemo, useState } from "react";
-import { Boxes, Search, CheckCircle2, XCircle, Clock, Star } from "lucide-react";
+import { Boxes, Search, CheckCircle2, XCircle, Clock, Star, MessageSquare, GraduationCap } from "lucide-react";
 
 import { PageHeader, EmptyState } from "@/components/console/PageHeader";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { listCatalog, type CatalogItem } from "@/lib/settings.functions";
 
@@ -167,6 +168,22 @@ function CatalogPage() {
                   {item.endpoint_url}
                 </div>
               </div>
+
+              <div className="mt-auto flex gap-2 pt-1">
+                <Button asChild size="sm" variant="default" className="flex-1" disabled={!item.enabled}>
+                  <Link to="/chat" search={{ endpoint: item.id }}>
+                    <MessageSquare className="ml-1.5 h-3.5 w-3.5" />
+                    دردشة
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline" className="flex-1">
+                  <Link to="/training" search={{ endpoint: item.id }}>
+                    <GraduationCap className="ml-1.5 h-3.5 w-3.5" />
+                    تدريب
+                  </Link>
+                </Button>
+              </div>
+
             </div>
           ))}
         </div>
