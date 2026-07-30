@@ -35,6 +35,7 @@ interface Msg {
 }
 
 function TrainingPage() {
+  const { endpoint: endpointParam } = Route.useSearch();
   const fetchAgents = useServerFn(listAgents);
   const fetchEndpoints = useServerFn(listEndpoints);
 
@@ -42,6 +43,7 @@ function TrainingPage() {
   const eps = useQuery({ queryKey: ["endpoints-training"], queryFn: fetchEndpoints });
 
   const [agentId, setAgentId] = useState<string>("");
+  const [endpointOverride, setEndpointOverride] = useState<string>(endpointParam ?? "agent");
   const [systemPrompt, setSystemPrompt] = useState<string>("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -50,9 +52,14 @@ function TrainingPage() {
   const endRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
+  useEffect(() => {
+    if (endpointParam) setEndpointOverride(endpointParam);
+  }, [endpointParam]);
+
   const agent = (agents.data ?? []).find((a) => a.id === agentId);
-  const endpointId = agent?.endpoint_id ?? "";
+  const endpointId = endpointOverride !== "agent" ? endpointOverride : (agent?.endpoint_id ?? "");
   const endpoint = (eps.data ?? []).find((e) => e.id === endpointId);
+
 
   // Preload agent's system prompt when picked
   useEffect(() => {
