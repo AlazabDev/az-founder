@@ -23,6 +23,9 @@ import { listAgents } from "@/lib/agents.functions";
 import { listEndpoints } from "@/lib/endpoints.functions";
 
 export const Route = createFileRoute("/_app/training")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    endpoint: typeof search.endpoint === "string" ? search.endpoint : undefined,
+  }),
   component: TrainingPage,
 });
 
