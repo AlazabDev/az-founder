@@ -38,14 +38,20 @@ interface Msg {
 
 function ChatPage() {
   const qc = useQueryClient();
+  const { endpoint: endpointParam } = Route.useSearch();
   const [convId, setConvId] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [streamText, setStreamText] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
-  const [endpointId, setEndpointId] = useState<string | "auto">("auto");
+  const [endpointId, setEndpointId] = useState<string | "auto">(endpointParam ?? "auto");
   const endRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (endpointParam) setEndpointId(endpointParam);
+  }, [endpointParam]);
+
 
   const fetchList = useServerFn(listConversations);
   const fetchOne = useServerFn(getConversation);
