@@ -3,14 +3,21 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { KeyRound, Save, Trash2 } from "lucide-react";
+import { KeyRound, PlugZap, RefreshCw, Save, Trash2 } from "lucide-react";
 
 import { PageHeader } from "@/components/console/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { getOllamaSettings, saveOllamaSettings } from "@/lib/settings.functions";
+import {
+  getOllamaSettings,
+  saveOllamaSettings,
+  syncOllamaModels,
+  testOllamaConnection,
+  type OllamaSyncResult,
+  type OllamaTestResult,
+} from "@/lib/settings.functions";
 
 export const Route = createFileRoute("/_app/ollama")({
   component: OllamaSettingsPage,
