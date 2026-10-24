@@ -33,7 +33,7 @@ export const getOllamaSettings = createServerFn({ method: "GET" })
     if (error) throw error;
     const map = new Map<string, string | null>((data ?? []).map((r) => [r.key, r.value]));
     return {
-      ollama_url: map.get("ollama_url") ?? process.env.OLLAMA_URL ?? "https://ollama.alazab.cloud",
+      ollama_url: map.get("ollama_url") ?? process.env.OLLAMA_URL ?? "https://ollama.alazab.com",
       ollama_user: map.get("ollama_user") ?? process.env.OLLAMA_USER ?? "azureuser",
       ollama_pass_set: Boolean(map.get("ollama_pass")) || Boolean(process.env.OLLAMA_PASS),
     };
@@ -125,7 +125,7 @@ export const listCatalog = createServerFn({ method: "GET" })
       .order("name", { ascending: true });
     if (error) throw error;
     // Resolve stored ollama URL (fallback to env) once, without exposing credentials.
-    let ollamaUrl = process.env.OLLAMA_URL ?? "https://ollama.alazab.cloud";
+    let ollamaUrl = process.env.OLLAMA_URL ?? "https://ollama.alazab.com";
     const { data: setting } = await context.supabase
       .from("app_settings")
       .select("value")
