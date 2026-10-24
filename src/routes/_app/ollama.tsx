@@ -27,6 +27,8 @@ function OllamaSettingsPage() {
   const qc = useQueryClient();
   const fetchSettings = useServerFn(getOllamaSettings);
   const save = useServerFn(saveOllamaSettings);
+  const test = useServerFn(testOllamaConnection);
+  const sync = useServerFn(syncOllamaModels);
 
   const q = useQuery({ queryKey: ["ollama-settings"], queryFn: fetchSettings });
 
