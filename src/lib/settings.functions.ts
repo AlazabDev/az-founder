@@ -33,7 +33,7 @@ export const getOllamaSettings = createServerFn({ method: "GET" })
     if (error) throw error;
     const map = new Map<string, string | null>((data ?? []).map((r) => [r.key, r.value]));
     return {
-      ollama_url: map.get("ollama_url") ?? process.env.OLLAMA_URL ?? "https://ollama.alazab.cloud",
+      ollama_url: map.get("ollama_url") ?? process.env.OLLAMA_URL ?? "https://ollama.alazab.com",
       ollama_user: map.get("ollama_user") ?? process.env.OLLAMA_USER ?? "azureuser",
       ollama_pass_set: Boolean(map.get("ollama_pass")) || Boolean(process.env.OLLAMA_PASS),
     };
@@ -125,7 +125,7 @@ export const listCatalog = createServerFn({ method: "GET" })
       .order("name", { ascending: true });
     if (error) throw error;
     // Resolve stored ollama URL (fallback to env) once, without exposing credentials.
-    let ollamaUrl = process.env.OLLAMA_URL ?? "https://ollama.alazab.cloud";
+    let ollamaUrl = process.env.OLLAMA_URL ?? "https://ollama.alazab.com";
     const { data: setting } = await context.supabase
       .from("app_settings")
       .select("value")
@@ -157,4 +157,105 @@ export const listCatalog = createServerFn({ method: "GET" })
       last_latency_ms: row.last_latency_ms,
       last_checked_at: row.last_checked_at,
     }));
+  });
+
+/* ---------------- Ollama live connection test & model sync ---------------- */
+
+export interface OllamaTestResult {
+  ok: boolean;
+  version?: string;
+  latency_ms?: number;
+  model_count?: number;
+  error?: string;
+}
+
+function ollamaAuthHeader(cfg: { user: string; pass?: string }): Record<string, string> {
+  if (!cfg.pass) return {};
+  return { Authorization: "Basic " + Buffer.from(`${cfg.user}:${cfg.pass}`).toString("base64") };
+}
+
+/** Tests the stored Ollama credentials against /api/version and /api/tags. */
+export const testOllamaConnection = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<OllamaTestResult> => {
+    await requireAdmin(context.supabase, context.userId);
+    const { getOllamaConfig } = await import("@/lib/ai-gateway.server");
+    const cfg = await getOllamaConfig(true);
+    const base = cfg.url.replace(/\/$/, "");
+    const headers = ollamaAuthHeader(cfg);
+    const started = Date.now();
+    try {
+      const res = await fetch(`${base}/api/version`, { headers, signal: AbortSignal.timeout(20_000) });
+      const latency_ms = Date.now() - started;
+      if (!res.ok) {
+        const hint = res.status === 401 ? " — رفض الخادم بيانات الاعتماد؛ احفظ OLLAMA_PASS صحيحة" : "";
+        return { ok: false, latency_ms, error: `HTTP ${res.status}${hint}` };
+      }
+      const body = (await res.json().catch(() => ({}))) as { version?: string };
+      let model_count: number | undefined;
+      try {
+        const tags = await fetch(`${base}/api/tags`, { headers, signal: AbortSignal.timeout(20_000) });
+        if (tags.ok) model_count = ((await tags.json())?.models ?? []).length;
+      } catch {
+        /* model count is informational only */
+      }
+      return { ok: true, version: body.version, latency_ms, model_count };
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    }
+  });
+
+export interface OllamaSyncResult {
+  ok: boolean;
+  total?: number;
+  added?: string[];
+  disabled?: string[];
+  error?: string;
+}
+
+function ollamaSlug(model: string): string {
+  return ("ol-" + model.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")).slice(0, 120);
+}
+
+/** Syncs ai_endpoints with the models actually installed on the Ollama server. */
+export const syncOllamaModels = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<OllamaSyncResult> => {
+    await requireAdmin(context.supabase, context.userId);
+    const { getOllamaConfig } = await import("@/lib/ai-gateway.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const cfg = await getOllamaConfig(true);
+    const base = cfg.url.replace(/\/$/, "");
+    const headers = ollamaAuthHeader(cfg);
+    let models: Array<{ name: string }>;
+    try {
+      const res = await fetch(`${base}/api/tags`, { headers, signal: AbortSignal.timeout(30_000) });
+      if (!res.ok) {
+        const hint = res.status === 401 ? " — احفظ OLLAMA_PASS صحيحة أولًا" : "";
+        return { ok: false, error: `HTTP ${res.status}${hint}` };
+      }
+      models = ((await res.json())?.models ?? []) as Array<{ name: string }>;
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    }
+    const live = new Set(models.map((m) => m.name));
+    const { data: existing, error: selErr } = await supabaseAdmin
+      .from("ai_endpoints")
+      .select("id,model,enabled")
+      .eq("provider", "ollama");
+    if (selErr) return { ok: false, error: selErr.message };
+    const byModel = new Map((existing ?? []).map((r) => [r.model as string, r]));
+    const toInsert = models
+      .filter((m) => !byModel.has(m.name))
+      .map((m) => ({ name: ollamaSlug(m.name), provider: "ollama", model: m.name, base_url: null, enabled: true }));
+    if (toInsert.length) {
+      const { error } = await supabaseAdmin.from("ai_endpoints").insert(toInsert);
+      if (error) return { ok: false, error: error.message };
+    }
+    const gone = (existing ?? []).filter((r) => !live.has(r.model as string) && r.enabled);
+    if (gone.length) {
+      const { error } = await supabaseAdmin.from("ai_endpoints").update({ enabled: false }).in("id", gone.map((r) => r.id));
+      if (error) return { ok: false, error: error.message };
+    }
+    return { ok: true, total: models.length, added: toInsert.map((r) => r.model as string), disabled: gone.map((r) => r.model as string) };
   });

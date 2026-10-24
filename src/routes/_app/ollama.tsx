@@ -3,14 +3,21 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { KeyRound, Save, Trash2 } from "lucide-react";
+import { KeyRound, PlugZap, RefreshCw, Save, Trash2 } from "lucide-react";
 
 import { PageHeader } from "@/components/console/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { getOllamaSettings, saveOllamaSettings } from "@/lib/settings.functions";
+import {
+  getOllamaSettings,
+  saveOllamaSettings,
+  syncOllamaModels,
+  testOllamaConnection,
+  type OllamaSyncResult,
+  type OllamaTestResult,
+} from "@/lib/settings.functions";
 
 export const Route = createFileRoute("/_app/ollama")({
   component: OllamaSettingsPage,
@@ -27,6 +34,8 @@ function OllamaSettingsPage() {
   const [user, setUser] = useState("");
   const [pass, setPass] = useState("");
   const [clearPass, setClearPass] = useState(false);
+  const [testResult, setTestResult] = useState<OllamaTestResult | null>(null);
+  const [syncResult, setSyncResult] = useState<OllamaSyncResult | null>(null);
 
   useEffect(() => {
     if (q.data) {
@@ -53,6 +62,49 @@ function OllamaSettingsPage() {
       toast.success("تم حفظ بيانات وصول Ollama");
       setPass("");
       setClearPass(false);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const testMut = useMutation({
+    mutationFn: async () => {
+      // Persist unsaved URL/user edits first so the test runs against what the user sees.
+      await save({
+        data: {
+          ollama_url: url,
+          ollama_user: user,
+          ollama_pass: pass || undefined,
+          clear_password: clearPass,
+        },
+      });
+      return test({});
+    },
+    onSuccess: (r: OllamaTestResult) => {
+      setTestResult(r);
+      qc.invalidateQueries({ queryKey: ["ollama-settings"] });
+      if (r.ok) toast.success(`الاتصال ناجح — Ollama ${r.version ?? ""} (${r.model_count ?? "?"} نموذج)`);
+      else toast.error(r.error ?? "فشل الاتصال");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const syncMut = useMutation({
+    mutationFn: async () => {
+      await save({
+        data: {
+          ollama_url: url,
+          ollama_user: user,
+          ollama_pass: pass || undefined,
+          clear_password: clearPass,
+        },
+      });
+      return sync({});
+    },
+    onSuccess: (r: OllamaSyncResult) => {
+      setSyncResult(r);
+      qc.invalidateQueries({ queryKey: ["catalog"] });
+      if (r.ok) toast.success(`تمت المزامنة — ${r.total ?? 0} نموذج على الخادم`);
+      else toast.error(r.error ?? "فشلت المزامنة");
     },
     onError: (e: Error) => toast.error(e.message),
   });

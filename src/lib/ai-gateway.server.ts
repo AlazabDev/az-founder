@@ -365,7 +365,7 @@ let _ollamaCache: { at: number; cfg: OllamaConfig } | null = null;
 export async function getOllamaConfig(force = false): Promise<OllamaConfig> {
   if (!force && _ollamaCache && Date.now() - _ollamaCache.at < 30_000) return _ollamaCache.cfg;
   const cfg: OllamaConfig = {
-    url: process.env.OLLAMA_URL ?? "https://ollama.alazab.cloud",
+    url: process.env.OLLAMA_URL ?? "https://ollama.alazab.com",
     user: process.env.OLLAMA_USER ?? "azureuser",
     pass: process.env.OLLAMA_PASS,
   };
