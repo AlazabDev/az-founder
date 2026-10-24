@@ -247,7 +247,7 @@ export const syncOllamaModels = createServerFn({ method: "POST" })
     const byModel = new Map((existing ?? []).map((r) => [r.model as string, r]));
     const toInsert = models
       .filter((m) => !byModel.has(m.name))
-      .map((m) => ({ name: ollamaSlug(m.name), provider: "ollama", model: m.name, base_url: null, enabled: true }));
+      .map((m) => ({ name: ollamaSlug(m.name), provider: "ollama" as const, model: m.name, base_url: null, enabled: true }));
     if (toInsert.length) {
       const { error } = await supabaseAdmin.from("ai_endpoints").insert(toInsert);
       if (error) return { ok: false, error: error.message };
