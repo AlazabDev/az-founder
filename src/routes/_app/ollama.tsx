@@ -136,7 +136,7 @@ function OllamaSettingsPage() {
           <Input
             id="url"
             dir="ltr"
-            placeholder="https://ollama.alazab.cloud"
+            placeholder="https://ollama.alazab.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
