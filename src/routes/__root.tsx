@@ -7,6 +7,7 @@ import {
   Scripts,
   useRouter,
   Link,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
