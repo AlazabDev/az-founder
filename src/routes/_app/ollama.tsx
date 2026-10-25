@@ -23,6 +23,13 @@ export const Route = createFileRoute("/_app/ollama")({
   component: OllamaSettingsPage,
 });
 
+function latencyClass(ms?: number): string {
+  if (ms == null) return "";
+  if (ms < 800) return "text-primary";
+  if (ms < 3000) return "text-amber-600 dark:text-amber-400";
+  return "text-destructive";
+}
+
 function OllamaSettingsPage() {
   const qc = useQueryClient();
   const fetchSettings = useServerFn(getOllamaSettings);
