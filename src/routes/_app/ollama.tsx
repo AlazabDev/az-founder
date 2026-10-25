@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { KeyRound, PlugZap, RefreshCw, Save, Trash2 } from "lucide-react";
+import { BadgeCheck, KeyRound, PlugZap, RefreshCw, Save, TriangleAlert, Trash2 } from "lucide-react";
 
 import { PageHeader } from "@/components/console/PageHeader";
 import { Button } from "@/components/ui/button";
