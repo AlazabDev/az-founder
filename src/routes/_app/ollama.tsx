@@ -187,7 +187,27 @@ function OllamaSettingsPage() {
           ) : null}
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex flex-wrap justify-between gap-2 pt-2">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              onClick={() => testMut.mutate()}
+              disabled={testMut.isPending || syncMut.isPending || !url || !user}
+              className="gap-2"
+            >
+              <PlugZap className="h-4 w-4" />
+              {testMut.isPending ? "جارٍ الاختبار..." : "اختبار الاتصال"}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => syncMut.mutate()}
+              disabled={testMut.isPending || syncMut.isPending || !url || !user}
+              className="gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${syncMut.isPending ? "animate-spin" : ""}`} />
+              {syncMut.isPending ? "جارٍ المزامنة..." : "مزامنة النماذج"}
+            </Button>
+          </div>
           <Button
             onClick={() => mut.mutate()}
             disabled={mut.isPending || !url || !user}
@@ -198,6 +218,114 @@ function OllamaSettingsPage() {
           </Button>
         </div>
       </div>
+
+      {testResult ? (
+        <div className="mt-5 space-y-3 rounded-lg border bg-card p-5">
+          <div className="flex items-center gap-2">
+            {testResult.ok ? (
+              <>
+                <BadgeCheck className="h-5 w-5 text-primary" />
+                <span className="font-medium">الاتصال ناجح</span>
+              </>
+            ) : (
+              <>
+                <TriangleAlert className="h-5 w-5 text-destructive" />
+                <span className="font-medium">فشل الاتصال</span>
+              </>
+            )}
+            <Badge variant="outline" className="ms-auto text-[10px]">
+              فحص اتصال مباشر
+            </Badge>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <div className="rounded-md border bg-background p-3">
+              <div className="text-xs text-muted-foreground">زمن الاستجابة</div>
+              <div className={`mt-1 text-lg font-semibold ${latencyClass(testResult.latency_ms)}`}>
+                {testResult.latency_ms != null ? `${testResult.latency_ms} م.ث` : "—"}
+              </div>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <div className="text-xs text-muted-foreground">إصدار Ollama</div>
+              <div className="mt-1 text-lg font-semibold" dir="ltr">
+                {testResult.version ?? "—"}
+              </div>
+            </div>
+            <div className="rounded-md border bg-background p-3">
+              <div className="text-xs text-muted-foreground">النماذج المكتشفة</div>
+              <div className="mt-1 text-lg font-semibold">
+                {testResult.model_count != null ? testResult.model_count : "—"}
+              </div>
+            </div>
+          </div>
+          {!testResult.ok && testResult.error ? (
+            <p className="text-sm text-destructive" dir="ltr">
+              {testResult.error}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      {syncResult ? (
+        <div className="mt-5 space-y-3 rounded-lg border bg-card p-5">
+          <div className="flex items-center gap-2">
+            {syncResult.ok ? (
+              <>
+                <RefreshCw className="h-5 w-5 text-primary" />
+                <span className="font-medium">اكتملت المزامنة</span>
+              </>
+            ) : (
+              <>
+                <TriangleAlert className="h-5 w-5 text-destructive" />
+                <span className="font-medium">فشلت المزامنة</span>
+              </>
+            )}
+            <Badge variant="outline" className="ms-auto text-[10px]">
+              مزامنة الكتالوج
+            </Badge>
+          </div>
+          {syncResult.ok ? (
+            <>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div className="rounded-md border bg-background p-3">
+                  <div className="text-xs text-muted-foreground">إجمالي النماذج على الخادم</div>
+                  <div className="mt-1 text-lg font-semibold">{syncResult.total ?? 0}</div>
+                </div>
+                <div className="rounded-md border bg-background p-3">
+                  <div className="text-xs text-muted-foreground">أُضيفت للكتالوج</div>
+                  <div className="mt-1 text-lg font-semibold">{syncResult.added?.length ?? 0}</div>
+                </div>
+                <div className="rounded-md border bg-background p-3">
+                  <div className="text-xs text-muted-foreground">عُطِّلت (غير موجودة على الخادم)</div>
+                  <div className="mt-1 text-lg font-semibold">{syncResult.disabled?.length ?? 0}</div>
+                </div>
+              </div>
+              {syncResult.added?.length ? (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">مضافة حديثًا: </span>
+                  <span dir="ltr" className="font-mono">
+                    {syncResult.added.join(", ")}
+                  </span>
+                </div>
+              ) : null}
+              {syncResult.disabled?.length ? (
+                <p className="flex items-start gap-2 text-sm text-amber-600 dark:text-amber-400">
+                  <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>
+                    نماذج معطلة لعدم وجودها على الخادم:{" "}
+                    <span dir="ltr" className="font-mono">
+                      {syncResult.disabled.join(", ")}
+                    </span>
+                  </span>
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <p className="text-sm text-destructive" dir="ltr">
+              {syncResult.error}
+            </p>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }
